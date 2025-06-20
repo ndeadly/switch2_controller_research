@@ -100,7 +100,7 @@ Uninitialised on original factory firmware. After firmware update contains an un
 
 ## 0x1FA000-0x1FAFFF
 
-Contains Bluetooth pairing info. Appears to be an item count, followed by an array of `count * 0x1D` items. Each item contains the host address and LTK. By default there are 2 entries that share the same LTK. The first host address is the public console address seen during pairing. The second is always identical to the first, with the last byte decremented by one. This is likely some kind of private secondary interface.
+Contains Bluetooth pairing info. Appears to be an item count, followed by an array of `count * 0x28` items. Each item contains the host address and LTK. By default there are 2 entries that share the same LTK. The first host address is the public console address seen during pairing. The second is always identical to the first, with the last byte decremented by one. This is likely some kind of private secondary interface.
 
 | Offset   | Size | Example                                           | Usage           |
 | ---      | ---  | ---                                               | ---             |
