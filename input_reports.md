@@ -1,14 +1,16 @@
-# Input reports
+# HID Input Reports
 
-There are two known input report formats. The format is the same between USB and Bluetooth interfaces, but USB reports include an additional byte at the beginning for the report ID. Therefore, the offsets listed here must be incremented by one if you are considering the raw USB report with the report ID included. Bluetooth reports are uniquely identified by their associated GATT characteristic and its UUID.
+There are two HID input report formats, with IDs `0x05` and `0x09`. Both reports are the same between USB and Bluetooth interfaces, except Bluetooth reports omit the first byte containing the report ID since they are uniquely identified by their associated GATT characteristic and its UUID or handle. The offsets listed here don't account for the report ID, so must be incremented by one if you are working with packets transmitted over USB.
 
-USB reports must be activated by sending output report `0x03` to the command endpoint. The full command looks like `03 91 00 0D 00 08 00 00 01 00 FF FF FF FF FF FF`, where the `0xFF` values are the host Bluetooth address in little-endian byte order.
+USB reports are activated by sending command `0x03` to the command endpoint. Official software initially sends `03 91 00 0D 00 08 00 00 01 00 FF FF FF FF FF FF`, where the `0xFF` values are the host Bluetooth address in little-endian byte order. However, this seem to be related to pairing and `03 91 00 0A 00 04 00 00 09 00 00 00` can be used instead to simultaneously activate input reports and set the report ID via byte 8.
 
 Bluetooth reports are activated by enabling notifications for the appropriate GATT characteristic, by writing the value `0x0001` to its associated Client Characteristic Configuration Descriptor (UUID=`0x2902`). Enabling notifications for one characteristic will disable them for the other, if enabled.
 
-By default, Nintendo uses [format #2](#hid-format-2) on both interfaces. It is not yet known how to activate [format #1](#hid-format-1) over USB.
+By default, Nintendo uses [report 0x09](#input-report-0x09) on both USB and Bluetooth interfaces. It is not known if [report 0x05](#input-report-0x05) is currently used officially.
 
-## HID Format #1
+---
+
+## Input Report 0x05
 
 Sent via GATT handle 0x000A (UUID=`ab7de9be-89fe-49ad-828f-118f09df7fd2`). Common format across all controller types.
 
@@ -71,10 +73,11 @@ Sent via GATT handle 0x000A (UUID=`ab7de9be-89fe-49ad-828f-118f09df7fd2`). Commo
 | 0xE    | 0x2  | Gyro Y      | -       |
 | 0x10   | 0x2  | Gyro Z      | -       |
 
+---
 
-## HID Format #2
+## Input Report #0x09
 
-Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always length 0x3F but report format changes depending upon controller type.
+Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always length 0x3F but report format changes depending upon controller type. Pro controller and Gamecube reports are almost identical apart from analog triggers and headset fields but have been documented separately along with controller-specific button labelling to avoid confusion.
 
 
 ### Joycon Report
@@ -117,7 +120,6 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 0x2    | 0x2  | Delta Y | -                  |
 | 0x4    | 0x1  | Unknown | Lift-off distance? |
 
----
 
 ### Pro Controller Report
 
@@ -143,7 +145,6 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 1    | Left Stick  | Minus | ZL   | L    | Up   | Left | Right   | Down |
 | 2    | -           | -     | -    | C    | GL   | GR   | Capture | Home |
 
----
 
 ### NSO Gamecube Controller Report
 
@@ -155,8 +156,8 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 0x5    | 0x3  | Left Analog Stick           | Packed 12-bit values (uncalibrated)                          |
 | 0x8    | 0x3  | Right Analog Stick          | Packed 12-bit values (uncalibrated)                          |
 | 0xB    | 0x1  | Unknown                     | Always 0x38                                                  |
-| 0xC    | 0x1  | Left Analog Trigger         | Only present on Gamecube NSO controller (uncalibrated)       |
-| 0xD    | 0x1  | Right Analog Trigger        | Only present on Gamecube NSO controller (uncalibrated)       |
+| 0xC    | 0x1  | Left Analog Trigger         | Gamecube analog trigger (uncalibrated)                       |
+| 0xD    | 0x1  | Right Analog Trigger        | Gamecube analog trigger (uncalibrated)                       |
 | 0xE    | 0x1  | Motion Data Length          | Length of following motion data. Observed values {0, 30, 40} |
 | 0xF    | 0x28 | Motion Data                 | Activated via feature bit 2. Unknown packed format           |
 | 0x37   | 0x8  | Reserved                    | Unused                                                       |
@@ -165,6 +166,6 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 
 | Byte | 0x80        | 0x40  | 0x20 | 0x10 | 0x08 | 0x04 | 0x02    | 0x01 |
 | ---  | ---         | ---   | ---  | ---  | ---  | ---  | ---     |  --- |
-| 0    | Right Stick | Plus  | ZR   | R    | X    | Y    | A       | B    |
-| 1    | Left Stick  | Minus | ZL   | L    | Up   | Left | Right   | Down |
-| 2    | -           | -     | -    | C    | GL   | GR   | Capture | Home |
+| 0    | Right Stick | Plus  | R    | Z    | X    | Y    | A       | B    |
+| 1    | Left Stick  | Minus | L    | ZL   | Up   | Left | Right   | Down |
+| 2    | -           | -     | -    | C    | -    | -    | Capture | Home |
