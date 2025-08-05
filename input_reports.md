@@ -2,7 +2,7 @@
 
 There are two HID input report formats, with IDs `0x05` and `0x09`. Both reports are the same between USB and Bluetooth interfaces, except Bluetooth reports omit the first byte containing the report ID since they are uniquely identified by their associated GATT characteristic and its UUID or handle. The offsets listed here don't account for the report ID, so must be incremented by one if you are working with packets transmitted over USB.
 
-USB reports are activated by sending command `0x03` to the command endpoint. Official software initially sends `03 91 00 0D 00 08 00 00 01 00 FF FF FF FF FF FF`, where the `0xFF` values are the host Bluetooth address in little-endian byte order. However, this seem to be related to pairing and `03 91 00 0A 00 04 00 00 09 00 00 00` can be used instead to simultaneously activate input reports and set the report ID via byte 8.
+USB reports are activated by sending command `0x03` to the command endpoint. Official software sends `03 91 00 0D 00 08 00 00 01 00 FF FF FF FF FF FF`, where the `0xFF` values are the host Bluetooth address in little-endian byte order. However, we can omit the Bluetooth address and leave it as 0xFF if not performing wired pairing. This is followed up by another command `03 91 00 0A 00 04 00 00 09 00 00 00` to select the input report ID via byte 8.
 
 Bluetooth reports are activated by enabling notifications for the appropriate GATT characteristic, by writing the value `0x0001` to its associated Client Characteristic Configuration Descriptor (UUID=`0x2902`). Enabling notifications for one characteristic will disable them for the other, if enabled.
 
