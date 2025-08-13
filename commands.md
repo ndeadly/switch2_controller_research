@@ -21,32 +21,32 @@
 
 ### Command Types
 
-| Command ID                              | Usage           |
-| ---                                     | ---             |
-| [0x01](#command-0x01---nfc)             | NFC             |
-| [0x02](#command-0x02---flash-memory)    | Flash Memory    |
-| [0x03](#command-0x03---initialisation)  | Initialisation  |
-| [0x04](#command-0x04---unknown)         | Unknown         |
-| [0x05](#command-0x05---unknown)         | Unknown         |
-| [0x06](#command-0x06---unknown)         | Unknown         |
-| [0x07](#command-0x07---unknown)         | Unknown         |
-| [0x08](#command-0x08---unknown)         | Unknown         |
-| [0x09](#command-0x09---player-leds)     | Player LEDs     |
-| [0x0A](#command-0x0a---vibration)       | Vibration       |
-| [0x0B](#command-0x0b---battery)         | Battery         |
-| [0x0C](#command-0x0c---feature-select)  | Feature Select  |
-| [0x0D](#command-0x0d---firmware-update) | Firmware Update |
-| [0x0E](#command-0x0e---unknown)         | Unknown         |
-| [0x0F](#command-0x0f---unknown)         | Unknown         |
-| [0x10](#command-0x10---unknown)         | Unknown         |
-| [0x11](#command-0x11---unknown)         | Unknown         |
-| [0x12](#command-0x12---unknown)         | Unknown         |
-| [0x13](#command-0x13---unknown)         | Unknown         |
-| [0x14](#command-0x14---unknown)         | Unknown         |
-| [0x15](#command-0x15---pairing)         | Pairing         |
-| [0x16](#command-0x16---unknown)         | Unknown         |
-| [0x17](#command-0x17---unknown)         | Unknown         |
-| [0x18](#command-0x18---unknown)         | Unknown         |
+| Command ID                                | Usage             |
+| ---                                       | ---               |
+| [0x01](#command-0x01---nfc)               | NFC               |
+| [0x02](#command-0x02---flash-memory)      | Flash Memory      |
+| [0x03](#command-0x03---initialisation)    | Initialisation    |
+| [0x04](#command-0x04---unknown)           | Unknown           |
+| [0x05](#command-0x05---unknown)           | Unknown           |
+| [0x06](#command-0x06---unknown)           | Unknown           |
+| [0x07](#command-0x07---unknown)           | Unknown           |
+| [0x08](#command-0x08---unknown)           | Unknown           |
+| [0x09](#command-0x09---player-leds)       | Player LEDs       |
+| [0x0A](#command-0x0a---vibration)         | Vibration         |
+| [0x0B](#command-0x0b---battery)           | Battery           |
+| [0x0C](#command-0x0c---feature-select)    | Feature Select    |
+| [0x0D](#command-0x0d---firmware-update)   | Firmware Update   |
+| [0x0E](#command-0x0e---unknown)           | Unknown           |
+| [0x0F](#command-0x0f---unknown)           | Unknown           |
+| [0x10](#command-0x10---unknown)           | Unknown           |
+| [0x11](#command-0x11---unknown)           | Unknown           |
+| [0x12](#command-0x12---unknown)           | Unknown           |
+| [0x13](#command-0x13---unknown)           | Unknown           |
+| [0x14](#command-0x14---unknown)           | Unknown           |
+| [0x15](#command-0x15---bluetooth-pairing) | Bluetooth Pairing |
+| [0x16](#command-0x16---unknown)           | Unknown           |
+| [0x17](#command-0x17---unknown)           | Unknown           |
+| [0x18](#command-0x18---unknown)           | Unknown           |
 
 ## Command 0x01 - NFC
 
@@ -203,14 +203,89 @@
 | ---     | ---        | ---   | ---             | ---              |
 | `0x14`  | `0x01`     |       |                 |                  |
 
-## Command 0x15 - Pairing
+## Command 0x15 - Bluetooth Pairing
 
-| Command | Subcommand | Usage                          | Example Request                                                                | Example Response                                                               |
-| ---     | ---        | ---                            | ---                                                                            | ---                                                                            |
-| `0x15`  | `0x01`     | Exchange adapter address(es)   | `15 91 01 01 00 0e 00 00` `00 02 81 eb 3a eb f1 48 80 eb 3a eb f1 48`          | `15 01 01 01 10 78 00 00` `01 04 01 88 16 c2 55 e2 98`                         |
-| `0x15`  | `0x02`     | Confirm LTK challenge/response | `15 91 01 02 00 11 00 00` `00 6f c6 df 8a d8 fe df 15 bb 8c 15 e9 1f 32 05 44` | `15 01 01 02 10 78 00 00` `01 13 4c 97 f5 11 b9 b6 dd 4d 86 fd 40 f5 36 e9 ed` |
-| `0x15`  | `0x03`     | Finalise pairing               | `15 91 01 03 00 01 00 00` `00`                                                 | `15 01 01 03 10 78 00 00` `01`                                                 |
-| `0x15`  | `0x04`     | Exchange LTK components        | `15 91 01 04 00 11 00 00` `00 35 03 e9 29 82 87 71 24 be a8 0c 66 46 15 83 4b` | `15 01 01 04 10 78 00 00` `01 5c f6 ee 79 2c df 05 e1 ba 2b 63 25 c4 1a 5f 10` |
+These commands are used for pairing the controller to the host instead of the standard [Security Manager Protocl (SMP)](https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-54/out/en/host/security-manager-specification.html#UUID-357f5fc6-5b55-6d33-e459-f42c929137f8) usually used by Bluetooth LE devices. Pairing is required for automatic reconnection and wake-from-sleep functionality to work with the console.
+
+| Command | Subcommand                                      | Usage                          | Example Request                                                                | Example Response                                                               |
+| ---     | ---                                             | ---                            | ---                                                                            | ---                                                                            |
+| `0x15`  | [`0x01`](#subcommand-0x01---exchange-addresses) | Exchange Bluetooth address(es) | `15 91 01 01 00 0e 00 00` `00 02 81 eb 3a eb f1 48 80 eb 3a eb f1 48`          | `15 01 01 01 10 78 00 00` `01 04 01 88 16 c2 55 e2 98`                         |
+| `0x15`  | [`0x02`](#subcommand-0x02---confirm-ltk)        | Confirm LTK challenge/response | `15 91 01 02 00 11 00 00` `00 6f c6 df 8a d8 fe df 15 bb 8c 15 e9 1f 32 05 44` | `15 01 01 02 10 78 00 00` `01 13 4c 97 f5 11 b9 b6 dd 4d 86 fd 40 f5 36 e9 ed` |
+| `0x15`  | [`0x03`](#subcommand-0x03---finalise-pairing)   | Finalise pairing               | `15 91 01 03 00 01 00 00` `00`                                                 | `15 01 01 03 10 78 00 00` `01`                                                 |
+| `0x15`  | [`0x04`](#subcommand-0x04---exchange-keys)      | Exchange LTK components        | `15 91 01 04 00 11 00 00` `00 35 03 e9 29 82 87 71 24 be a8 0c 66 46 15 83 4b` | `15 01 01 04 10 78 00 00` `01 5c f6 ee 79 2c df 05 e1 ba 2b 63 25 c4 1a 5f 10` |
+
+### Subcommand 0x01 - Exchange Addresses
+
+Exchange Bluetooth adapter addresses between host and controller to be stored alongside the Bluetooth `LTK` for the connection.
+
+**Request data:**
+
+| Offset | Size      | Value        | Comment                                               |
+| ---    | ---       | ---          | ---                                                   |
+| 0x0    | 0x1       | Unknown      | Always `0x00` for request                             |
+| 0x1    | 0x1       | Count        | Number of addresses in the following list             |
+| 0x2    | 0x6*Count | Address list | List of host Bluetooth addresses (reverse byte-order) |
+
+**Response data:**
+
+| Offset | Size | Value   | Comment                                                       |
+| ---    | ---  | ---     | ---                                                           |
+| 0x0    | 0x1  | Unknown | Always `0x01` for response                                    |
+| 0x1    | 0x1  | Unknown |                                                               |
+| 0x2    | 0x1  | Count?  | Always `0x01`, below could be another list with a single item |
+| 0x3    | 0x6  | Address | Controller Bluetooth address (reverse byte-order)             |
+
+### Subcommand 0x02 - Confirm LTK
+
+Send a 16-byte challenge to the controller. The controller computes the response $B2 = \operatorname{AES}^{128}_{LTK}(A2)$. That is, the challenge (`A2`) is encrypted with the `LTK` derived from [subcommand 0x04](#subcommand-0x04---exchange-keys) using AES128 in ECB mode. Since the challenge/response are transmitted in reverse byte-order, they must be byte-reversed for this computation.
+
+**Request data:**
+
+| Offset | Size | Value     | Comment                                    |
+| ---    | ---  | ---       | ---                                        |
+| 0x0    | 0x1  | Unknown   | Always `0x00` for request                  |
+| 0x1    | 0x10 | Challenge | Host challenge (`A2`) (reverse byte-order) |
+
+**Response data:**
+
+| Offset | Size | Value    | Comment                                     |
+| ---    | ---  | ---      | ---                                         |
+| 0x0    | 0x1  | Unknown  | Always `0x01` for response                  |
+| 0x1    | 0x10 | Response | Device response (`B2`) (reverse byte-order) |
+
+### Subcommand 0x03 - Finalise Pairing
+
+Finalise the pairing procedure and commit the host addresses and Bluetooth LTK to controller memory.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                   |
+| ---    | ---  | ---     | ---                       |
+| 0x0    | 0x1  | Unknown | Always `0x00` for request |
+
+**Response data:**
+
+| Offset | Size | Value   | Comment                    |
+| ---    | ---  | ---     | ---                        |
+| 0x0    | 0x1  | Unknown | Always `0x01` for response |
+
+### Subcommand 0x04 - Exchange Keys
+
+Exchange 16-byte public keys between host and controller. The shared Bluetooth LTK is computed as `A1 ^ B1`.
+
+**Request data:**
+
+| Offset | Size | Value    | Comment                              |
+| ---    | ---  | ---      | ---                                  |
+| 0x0    | 0x1  | Unknown  | Always `0x00` for request            |
+| 0x1    | 0x10 | Host key | Host key (`A1`) (reverse byte-order) |
+
+**Response data:**
+
+| Offset | Size | Value      | Comment                                                                            |
+| ---    | ---  | ---        | ---                                                                                |
+| 0x0    | 0x1  | Unknown    | Always `0x01` for response                                                         |
+| 0x1    | 0x10 | Device key | Device key (`B1`) (reverse byte-order) - always `5CF6EE792CDF05E1BA2B6325C41A5F10` |
 
 ## Command 0x16 - Unknown
 
