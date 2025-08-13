@@ -237,7 +237,7 @@ Exchange Bluetooth adapter addresses between host and controller to be stored al
 
 ### Subcommand 0x02 - Confirm LTK
 
-Send a 16-byte challenge to the controller. The controller computes the response $B2 = \operatorname{AES}^{128}_{LTK}(A2)$. That is, the challenge (`A2`) is encrypted with the `LTK` derived from [subcommand 0x04](#subcommand-0x04---exchange-keys) using AES128 in ECB mode. Since the challenge/response are transmitted in reverse byte-order, they must be byte-reversed for this computation.
+Send a 16-byte challenge to the controller. The controller computes the response $B2 = \text{AES}^{128}_{LTK}(A2)$. That is, the challenge (`A2`) is encrypted with the `LTK` derived from [subcommand 0x04](#subcommand-0x04---exchange-keys) using AES128 in ECB mode. Since the challenge/response are transmitted in reverse byte-order, they must be byte-reversed for this computation.
 
 **Request data:**
 
