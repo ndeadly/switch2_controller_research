@@ -1046,8 +1046,54 @@ Below are the various descriptors for each device, obtained via USB and parsed u
 
 #### USB Device Descriptor
 ```
+0x12,        // bLength
+0x01,        // bDescriptorType (Device)
+0x00, 0x02,  // bcdUSB 2.00
+0xFF,        // bDeviceClass 
+0x00,        // bDeviceSubClass 
+0x01,        // bDeviceProtocol 
+0x40,        // bMaxPacketSize0 64
+0x7E, 0x05,  // idVendor 0x057E
+0x74, 0x20,  // idProduct 0x2074
+0x13, 0x01,  // bcdDevice 2.13
+0x01,        // iManufacturer (String Index)
+0x02,        // iProduct (String Index)
+0x03,        // iSerialNumber (String Index)
+0x01,        // bNumConfigurations 1
 ```
 
 #### USB Configuration Descriptor
 ```
+0x09,        // bLength
+0x02,        // bDescriptorType (Configuration)
+0x20, 0x00,  // wTotalLength 32
+0x01,        // bNumInterfaces 1
+0x01,        // bConfigurationValue
+0x04,        // iConfiguration (String Index)
+0xC0,        // bmAttributes Self Powered
+0xFA,        // bMaxPower 500mA
+
+0x09,        // bLength
+0x04,        // bDescriptorType (Interface)
+0x00,        // bInterfaceNumber 0
+0x00,        // bAlternateSetting
+0x02,        // bNumEndpoints 2
+0xFF,        // bInterfaceClass
+0x00,        // bInterfaceSubClass
+0x00,        // bInterfaceProtocol
+0x05,        // iInterface (String Index)
+
+0x07,        // bLength
+0x05,        // bDescriptorType (Endpoint)
+0x01,        // bEndpointAddress (OUT/H2D)
+0x02,        // bmAttributes (Bulk)
+0x40, 0x00,  // wMaxPacketSize 64
+0x00,        // bInterval 0 (unit depends on device speed)
+
+0x07,        // bLength
+0x05,        // bDescriptorType (Endpoint)
+0x81,        // bEndpointAddress (IN/D2H)
+0x02,        // bmAttributes (Bulk)
+0x40, 0x00,  // wMaxPacketSize 64
+0x00,        // bInterval 0 (unit depends on device speed)
 ```
