@@ -1,5 +1,7 @@
 # Commands
 
+Most commands listed below with example data have been observed in use by the console through analysing sniffed USB or Bluetooth data. Other commands have been detected by fuzzing the command endpoints and checking for a success response. These commands may or may not be used in practice, and may not even be fully implemented in controller firmware (many return all zero).
+
 ### Command Structure
 
 | Offset | Size | Value                     | Comment               |
@@ -48,6 +50,8 @@
 | [0x17](#command-0x17---unknown)           | Unknown           |
 | [0x18](#command-0x18---unknown)           | Unknown           |
 
+---
+
 ## Command 0x01 - NFC
 
 | Command | Subcommand | Usage | Example Request           | Example Response                        |
@@ -60,35 +64,183 @@
 | `0x01`  | `0x06`     |       |                           |                                         |
 | `0x01`  | `0x0C`     |       | `01 91 01 0c 00 00 00 00` | `01 01 01 0c 10 78 00 00` `61 12 50 0d` |
 
+
+### Subcommand 0x0C - Unknown
+
+Unknown.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x4  | Unknown |         |
+
+---
+
 ## Command 0x02 - Flash Memory
 
-| Command | Subcommand | Usage        | Example Request                                                                                                                                                                                                                                     | Example Response                                                                                    |
-| ---     | ---        | ---          | ---                                                                                                                                                                                                                                                 | ---                                                                                                 |
-| `0x02`  | `0x01`     |              |                                                                                                                                                                                                                                                     |                                                                                                     |
-| `0x02`  | `0x03`     |              |                                                                                                                                                                                                                                                     |                                                                                                     |
-| `0x02`  | `0x04`     | Memory read  | `02 91 01 04 00 08 00 00` `10 7e 00 00 40 30 01 00`                                                                                                                                                                                                 | `02 01 01 04 10 78 00 00` `10 00 00 00 40 30 01 00 3b e0 d3 41 c6 60 6a bc 4d d7 a2 bb 71 1e dd 37` |
-| `0x02`  | `0x05`     | Memory write | `02 91 01 05 00 48 00 00` `40 7e 00 00 00 c0 1f 00 b2 a1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` | `02 01 01 05 10 78 00 00` `00 00 00 00 00 c0 1f 00`                                                 |
+| Command | Subcommand                                | Usage        | Example Request                                                                                                                                                                                                                                     | Example Response                                                                                    |
+| ---     | ---                                       | ---          | ---                                                                                                                                                                                                                                                 | ---                                                                                                 |
+| `0x02`  | `0x01`                                    |              |                                                                                                                                                                                                                                                     |                                                                                                     |
+| `0x02`  | `0x03`                                    |              |                                                                                                                                                                                                                                                     |                                                                                                     |
+| `0x02`  | [`0x04`](#subcommand-0x04---memory-read)  | Memory read  | `02 91 01 04 00 08 00 00` `10 7e 00 00 40 30 01 00`                                                                                                                                                                                                 | `02 01 01 04 10 78 00 00` `10 00 00 00 40 30 01 00 3b e0 d3 41 c6 60 6a bc 4d d7 a2 bb 71 1e dd 37` |
+| `0x02`  | [`0x05`](#subcommand-0x05---memory-write) | Memory write | `02 91 01 05 00 48 00 00` `40 7e 00 00 00 c0 1f 00 b2 a1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` | `02 01 01 05 10 78 00 00` `00 00 00 00 00 c0 1f 00`                                                 |
+
+
+### Subcommand 0x04 - Memory Read
+
+Read from internal flash [memory](memory_layout.md#memory-layout). Maximum read length is 0x4F bytes. Addresses above 0x200000 are wrapped around to zero.
+
+**Request data:**
+
+| Offset | Size | Value        | Comment                              |
+| ---    | ---  | ---          | ---                                  |
+| 0x0    | 0x1  | Read length  | Number of bytes to read              |
+| 0x1    | 0x1  | Unknown      | Always `0x7E`                        |
+| 0x2    | 0x2  | Unknown      | All `0x00`. Maybe padding            |
+| 0x4    | 0x4  | Read address | Address to read from (Little-Endian) |
+
+**Response data:** 
+
+| Offset | Size | Value        | Comment                                  |
+| ---    | ---  | ---          | ---                                      |
+| 0x0    | 0x1  | Read length  | Number of bytes read                     |
+| 0x1    | 0x3  | Unknown      | All `0x00`. Probably padding             |
+| 0x4    | 0x4  | Read address | Where data was read from (Little-Endian) |
+
+
+### Subcommand 0x05 - Memory Write
+
+Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write length is 0x4F bytes (I think?)
+
+**Request data:**
+
+| Offset | Size     | Value         | Comment                             |
+| ---    | ---      | ---           | ---                                 |
+| 0x0    | 0x1      | Write Length  | Number of bytes to write            |
+| 0x1    | 0x1      | Unknown       | Always `0x7E`                       |
+| 0x2    | 0x2      | Unknown       | All `0x00`. Maybe padding           |
+| 0x4    | 0x4      | Write address | Address to write to (Little-Endian) |
+| 0x8    | 0x0-0x4F | Data          | Data to write                       |
+
+**Response data:** 
+
+| Offset | Size | Value         | Comment                                   |
+| ---    | ---  | ---           | ---                                       |
+| 0x0    | 0x4  | Unknown       | All `0x00`                                |
+| 0x4    | 0x4  | Write address | Where data was written to (Little-Endian) |
+
+---
 
 ## Command 0x03 - Initialisation
 
-| Command | Subcommand | Usage               | Example Request                                                                               | Example Response                        |
-| ---     | ---        | ---                 | ---                                                                                           | ---                                     |
-| `0x03`  | `0x01`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x02`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x03`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x04`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x05`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x06`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x07`     | Store pairing info  | `03 91 01 07 00 16 00 00` `5e 11 85 eb f1 48 c1 27 80 67 1a fd 29 b8 00 e1 dd c5 19 b4 f0 54` | `03 01 01 07 10 78 00 00`               |
-| `0x03`  | `0x08`     |                     |                                                                                               |                                         |
-| `0x03`  | `0x09`     | Unknown             | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
-| `0x03`  | `0x0A`     | Select input report | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
-| `0x03`  | `0x0C`     | Unknown             | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
-| `0x03`  | `0x0D`     |                     | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
-| `0x03`  | `0x0F`     |                     |                                                                                               |                                         |
+| Command | Subcommand                                       | Usage               | Example Request                                                                               | Example Response                        |
+| ---     | ---                                              | ---                 | ---                                                                                           | ---                                     |
+| `0x03`  | `0x01`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x02`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x03`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x04`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x05`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x06`                                           |                     |                                                                                               |                                         |
+| `0x03`  | [`0x07`](#subcommand-0x07---store-pairing-info)  | Store pairing info  | `03 91 01 07 00 16 00 00` `5e 11 85 eb f1 48 c1 27 80 67 1a fd 29 b8 00 e1 dd c5 19 b4 f0 54` | `03 01 01 07 10 78 00 00`               |
+| `0x03`  | `0x08`                                           |                     |                                                                                               |                                         |
+| `0x03`  | `0x09`                                           | Unknown             | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
+| `0x03`  | [`0x0A`](#subcommand-0x0a---select-input-report) | Select input report | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
+| `0x03`  | `0x0C`                                           | Unknown             | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
+| `0x03`  | `0x0D`                                           | Unknown             | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
+| `0x03`  | `0x0F`                                           |                     |                                                                                               |                                         |
+
+
+### Subcommand 0x07 - Store Pairing Info
+
+Seems to allow for bypassing the [0x15 commands](#command-0x15---bluetooth-pairing) and writes a Bluetooth host address and Long-Term-Key (LTK) to the controller directly.
+
+**Request data:**
+
+| Offset | Size | Value        | Comment                                       |
+| ---    | ---  | ---          | ---                                           |
+| 0x0    | 0x6  | Host address | Bluetooth address of the host (byte-reversed) |
+| 0x6    | 0x10 | LTK          | Bluetooth LTK                 (byte-reversed) |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x09 - Unknown
+
+Unknown.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x0A - Select Input Report
+
+Selects one of the input report formats found in the HID report descriptor. Invalid report IDs are ignored. Defaults to [`0x09`](input_reports.md#input-report-0x09) on power-up.
+
+**Request data:**
+
+| Offset | Size | Value     | Comment                                                                                                              |
+| ---    | ---  | ---       | ---                                                                                                                  |
+| 0x0    | 0x1  | Report ID | Input report ID. Either [`0x05`](input_reports.md#input-report-0x05) or [`0x09`](input_reports.md#input-report-0x09) |
+| 0x1    | 0x3  | Unknown   | Seems to be unused                                                                                                   |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x0C - Unknown
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x4  | Unknown |         |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x0D - Unknown
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value        | Comment                                       |
+| ---    | ---  | ---          | ---                                           |
+| 0x0    | 0x1  | Unknown      |                                               |
+| 0x1    | 0x1  | Unknown      |                                               |
+| 0x2    | 0x6  | Host address | Bluetooth address of the host (byte-reversed) |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x4  | Unknown |         |
+
+
+---
 
 ## Command 0x04 - Unknown
 
+*Possibly unused*
+
+---
 
 ## Command 0x05 - Unknown
 
@@ -96,13 +248,33 @@
 | ---     | ---        | ---     | ---             | ---              |
 | `0x05`  | `0x01`     |         |                 |                  |
 
+---
+
 ## Command 0x06 - Unknown
 
-| Command | Subcommand | Usage   | Example Request                         | Example Response          |
-| ---     | ---        | ---     | ---                                     | ---                       |
-| `0x06`  | `0x01`     |         |                                         |                           |
-| `0x06`  | `0x02`     |         |                                         |                           |
-| `0x06`  | `0x03`     | Reboot? | `06 91 01 03 00 04 00 00` `01 00 00 00` | `06 01 01 03 10 78 00 00` |
+| Command | Subcommand                                     | Usage              | Example Request                         | Example Response          |
+| ---     | ---                                            | ---                | ---                                     | ---                       |
+| `0x06`  | `0x01`                                         |                    |                                         |                           |
+| `0x06`  | `0x02`                                         |                    |                                         |                           |
+| `0x06`  | [`0x03`](#subcommand-0x03---reboot-controller) | Reboot controller? | `06 91 01 03 00 04 00 00` `01 00 00 00` | `06 01 01 03 10 78 00 00` |
+
+
+### Subcommand 0x03 - Reboot Controller?
+
+This command is called following a controller firmware update and appears to reboot the controller and/or reload the firmware.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment               |
+| ---    | ---  | ---     | ---                   |
+| 0x0    | 0x1  | Unknown | Maybe a boolean flag? |
+| 0x1    | 0x3  | Unknown | Seems to be unused    |
+
+**Response data:** 
+
+*None*
+
+---
 
 ## Command 0x07 - Unknown
 
@@ -111,34 +283,116 @@
 | `0x07`  | `0x01`     | Unknown | `07 91 01 01 00 00 00 00` | `07 01 01 01 10 78 00 00` `00` |
 | `0x07`  | `0x02`     |         |                           |                                |
 
+
+### Subcommand 0x01 - Unknown
+
+Unknown. This is the first command sent during initialisation.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment               |
+| ---    | ---  | ---     | ---                   |
+| 0x0    | 0x1  | Unknown | Maybe a boolean flag? |
+
+---
+
 ## Command 0x08 - Unknown
+
+*Possibly unused*
+
+---
 
 ## Command 0x09 - Player LEDs
 
-| Command | Subcommand | Usage                  | Example Request                                     | Example Response          |
-| ---     | ---        | ---                    | ---                                                 | ---                       |
-| `0x09`  | `0x01`     |                        |                                                     |                           |
-| `0x09`  | `0x02`     |                        |                                                     |                           |
-| `0x09`  | `0x03`     |                        |                                                     |                           |
-| `0x09`  | `0x04`     |                        |                                                     |                           |
-| `0x09`  | `0x05`     |                        |                                                     |                           |
-| `0x09`  | `0x06`     |                        |                                                     |                           |
-| `0x09`  | `0x07`     | Set player LED pattern | `09 91 01 07 00 08 00 00` `01 00 00 00 00 00 00 00` | `09 01 01 07 10 78 00 00` |
-| `0x09`  | `0x08`     |                        |                                                     |                           |
+| Command | Subcommand                                   | Usage                  | Example Request                                     | Example Response          |
+| ---     | ---                                          | ---                    | ---                                                 | ---                       |
+| `0x09`  | `0x01`                                       |                        |                                                     |                           |
+| `0x09`  | `0x02`                                       |                        |                                                     |                           |
+| `0x09`  | `0x03`                                       |                        |                                                     |                           |
+| `0x09`  | `0x04`                                       |                        |                                                     |                           |
+| `0x09`  | `0x05`                                       |                        |                                                     |                           |
+| `0x09`  | `0x06`                                       |                        |                                                     |                           |
+| `0x09`  | [`0x07`](#subcommand-0x07---set-player-leds) | Set player LED pattern | `09 91 01 07 00 08 00 00` `01 00 00 00 00 00 00 00` | `09 01 01 07 10 78 00 00` |
+| `0x09`  | `0x08`                                       |                        |                                                     |                           |
+
+
+### Subcommand 0x07 - Set Player LEDs
+
+Set the player LED pattern on the controller.
+
+**Request data:**
+
+| Offset | Size | Value       | Comment                                          |
+| ---    | ---  | ---         | ---                                              |
+| 0x0    | 0x1  | LED bitmask | Bits 0-3 correspond to each of the 4 player LEDS |
+| 0x1    | 0x7  | Unknown     | Seems to be unused                               |
+
+**Response data:** 
+
+*None*
+
+---
 
 ## Command 0x0A - Vibration
 
-| Command | Subcommand | Usage                 | Example Request                                                                         | Example Response          |
-| ---     | ---        | ---                   | ---                                                                                     | ---                       |
-| `0x0A`  | `0x01`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x02`     | Play vibration sample | `0a 91 01 02 00 04 00 00` `03 00 00 00`                                                 | `0a 01 01 02 10 78 00 00` |
-| `0x0A`  | `0x03`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x04`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x05`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x06`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x07`     |                       |                                                                                         |                           |
-| `0x0A`  | `0x08`     | Send vibration data   | `0a 91 01 08 00 14 00 00` `01 ff ff ff ff ff ff ff ff 35 00 46 00 00 00 00 00 00 00 00` | `0a 01 01 08 10 78 00 00` |
-| `0x0A`  | `0x09`     |                       |                                                                                         |                           |
+| Command | Subcommand                                         | Usage                 | Example Request                                                                         | Example Response          |
+| ---     | ---                                                | ---                   | ---                                                                                     | ---                       |
+| `0x0A`  | `0x01`                                             |                       |                                                                                         |                           |
+| `0x0A`  | [`0x02`](#subcommand-0x02---play-vibration-sample) | Play vibration sample | `0a 91 01 02 00 04 00 00` `03 00 00 00`                                                 | `0a 01 01 02 10 78 00 00` |
+| `0x0A`  | `0x03`                                             |                       |                                                                                         |                           |
+| `0x0A`  | `0x04`                                             |                       |                                                                                         |                           |
+| `0x0A`  | `0x05`                                             |                       |                                                                                         |                           |
+| `0x0A`  | `0x06`                                             |                       |                                                                                         |                           |
+| `0x0A`  | `0x07`                                             |                       |                                                                                         |                           |
+| `0x0A`  | [`0x08`](#subcommand-0x08---send-vibration-data)   | Send vibration data   | `0a 91 01 08 00 14 00 00` `01 ff ff ff ff ff ff ff ff 35 00 46 00 00 00 00 00 00 00 00` | `0a 01 01 08 10 78 00 00` |
+| `0x0A`  | `0x09`                                             |                       |                                                                                         |                           |
+
+
+### Subcommand 0x02 - Play Vibration Sample
+
+Plays a short predefined vibration sample identified by ID.
+
+| Sample ID | Description                                            | Official Use                  |
+| ---       | ---                                                    | ---                           |
+| 0x1       | Low frequency buzz, ~1s                                |                               |
+| 0x2       | High frequency buzz, followed by beep-beep alarm sound | "Search For Controllers" tone |
+| 0x3       | Soft click-click vibration                             | Connection                    |
+| 0x4       | High to higher-frequency beep-beep sound               | Low battery?                  |
+| 0x5       | Like 0x03, but stronger                                |                               |
+| 0x6       | Short, high-frequency beep                             |                               |
+| 0x7       | Short, higher-frequency beep                           |                               |
+
+**Request data:**
+
+| Offset | Size | Value     | Comment              |
+| ---    | ---  | ---       | ---                  |
+| 0x0    | 0x1  | Sample ID | ID of sample to play |
+| 0x1    | 0x3  | Unknown   | Seems to be unused   |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x08 - Send Vibration Data
+
+Sends raw vibration data/commands to the controller.
+
+**Request data:**
+
+| Offset | Size | Value          | Comment                         |
+| ---    | ---  | ---            | ---                             |
+| 0x0    | 0x14 | Vibration data | Format not yet fully understood |
+
+**Response data:** 
+
+*None*
+
+---
 
 ## Command 0x0B - Battery
 
@@ -149,29 +403,182 @@
 | `0x0B`  | `0x06`     |       |                 |                  |
 | `0x0B`  | `0x07`     |       |                 |                  |
 
+---
+
 ## Command 0x0C - Feature Select
 
-| Command | Subcommand | Usage                   | Example Request                         | Example Response                        |
-| ---     | ---        | ---                     | ---                                     | ---                                     |
-| `0x0C`  | `0x01`     |                         |                                         |                                         |
-| `0x0C`  | `0x02`     | Init feature flags?     | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | `0x03`     |                         |                                         |                                         |
-| `0x0C`  | `0x04`     | Confirm feature flags?  | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | `0x05`     |                         |                                         |                                         |
+| Command | Subcommand                                         | Usage                   | Example Request                         | Example Response                        |
+| ---     | ---                                                | ---                     | ---                                     | ---                                     |
+| `0x0C`  | `0x01`                                             |                         |                                         |                                         |
+| `0x0C`  | [`0x02`](#subcommand-0x02---init-feature-flags)    | Init feature flags?     | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00` |
+| `0x0C`  | `0x03`                                             |                         |                                         |                                         |
+| `0x0C`  | [`0x04`](#subcommand-0x04---confirm-feature-flags) | Confirm feature flags?  | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00` |
+| `0x0C`  | `0x05`                                             |                         |                                         |                                         |
+
+
+### Subcommand 0x02 - Init Feature Flags?
+
+**Request data:**
+
+| Offset | Size | Value   | Comment            |
+| ---    | ---  | ---     | ---                |
+| 0x0    | 0x1  | Flags   | Feature flags      |
+| 0x1    | 0x3  | Unknown | Seems to be unused |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment    |
+| ---    | ---  | ---     | ---        |
+| 0x0    | 0x4  | Unknown | All `0x00` |
+
+
+### Subcommand 0x04 - Confirm Feature Flags?
+
+**Request data:**
+
+| Offset | Size | Value   | Comment            |
+| ---    | ---  | ---     | ---                |
+| 0x0    | 0x1  | Flags   | Feature flags      |
+| 0x1    | 0x3  | Unknown | Seems to be unused |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment    |
+| ---    | ---  | ---     | ---        |
+| 0x0    | 0x4  | Unknown | All `0x00` |
+
+---
 
 ## Command 0x0D - Firmware Update
 
-| Command | Subcommand | Usage   | Example Request                                                                                                                                                                                                                                                                                                                         | Example Response          |
-| ---     | ---        | ---     | ---                                                                                                                                                                                                                                                                                                                                     | ---                       |
-| `0x0D`  | `0x01`     | Unknown | `0d 91 01 01 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 01 10 78 00 00` |
-| `0x0D`  | `0x02`     | Unknown | `0d 91 01 02 00 05 00 00` `02 00 50 07 00`                                                                                                                                                                                                                                                                                              | `0d 01 01 02 10 78 00 00` |
-| `0x0D`  | `0x03`     | Unknown | `0d 91 01 03 00 09 00 00` `02 00 00 00 00 60 b0 03 00`                                                                                                                                                                                                                                                                                  | `0d 01 01 03 10 78 00 00` |
-| `0x0D`  | `0x04`     | Unknown | `0d 91 01 04 00 64 00 00` `60 00 00 00 db 9d e7 fd 8a 3f 7f b1 7e 9b 56 1b dc f2 a5 94 3a 42 b5 2c c9 c6 d2 f6 33 99 4d b6 63 5c 74 41 8b fa 9a 08 b0 94 4b e2 d4 19 07 7d 4b 59 bf 78 1f b0 97 2a 9c 6c e1 a7 a1 c1 0d e2 44 ad 42 4f 20 84 27 bc ee 16 f4 58 19 96 12 a8 fa 4f ef 0d b5 62 a6 5c ed 4d 94 d0 c5 82 39 94 7d d1 14 95` | `0d 01 01 04 10 78 00 00` |
-| `0x0D`  | `0x05`     | Unknown | `0d 91 01 05 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 05 10 78 00 00` |
-| `0x0D`  | `0x06`     | Unknown | `0d 91 01 06 00 0d 00 00` `02 00 00 00 00 60 b0 03 00 04 d5 54 f0`                                                                                                                                                                                                                                                                      | `0d 01 01 06 10 78 00 00` |
-| `0x0D`  | `0x07`     | Unknown | `0d 91 01 07 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 07 10 78 00 00` |
+| Command | Subcommand                                              | Usage                       | Example Request                                                                                                                                                                                                                                                                                                                         | Example Response          |
+| ---     | ---                                                     | ---                         | ---                                                                                                                                                                                                                                                                                                                                     | ---                       |
+| `0x0D`  | [`0x01`](#subcommand-0x01---initialise-firmware-update) | Initialise firmware update? | `0d 91 01 01 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 01 10 78 00 00` |
+| `0x0D`  | [`0x02`](#subcommand-0x02---set-failsafe-address)       | Set failsafe address?       | `0d 91 01 02 00 05 00 00` `02 00 50 07 00`                                                                                                                                                                                                                                                                                              | `0d 01 01 02 10 78 00 00` |
+| `0x0D`  | [`0x03`](#subcommand-0x03---set-firmware-image-size)    | Set firmware image size?    | `0d 91 01 03 00 09 00 00` `02 00 00 00 00 60 b0 03 00`                                                                                                                                                                                                                                                                                  | `0d 01 01 03 10 78 00 00` |
+| `0x0D`  | [`0x04`](#subcommand-0x04---transfer-update-data)       | Transfer update data        | `0d 91 01 04 00 64 00 00` `60 00 00 00 db 9d e7 fd 8a 3f 7f b1 7e 9b 56 1b dc f2 a5 94 3a 42 b5 2c c9 c6 d2 f6 33 99 4d b6 63 5c 74 41 8b fa 9a 08 b0 94 4b e2 d4 19 07 7d 4b 59 bf 78 1f b0 97 2a 9c 6c e1 a7 a1 c1 0d e2 44 ad 42 4f 20 84 27 bc ee 16 f4 58 19 96 12 a8 fa 4f ef 0d b5 62 a6 5c ed 4d 94 d0 c5 82 39 94 7d d1 14 95` | `0d 01 01 04 10 78 00 00` |
+| `0x0D`  | [`0x05`](#subcommand-0x05---end-data-transfer)          | End data transfer?          | `0d 91 01 05 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 05 10 78 00 00` |
+| `0x0D`  | [`0x06`](#subcommand-0x06---verify-firmware-update)     | Verify firmware update?     | `0d 91 01 06 00 0d 00 00` `02 00 00 00 00 60 b0 03 00 04 d5 54 f0`                                                                                                                                                                                                                                                                      | `0d 01 01 06 10 78 00 00` |
+| `0x0D`  | [`0x07`](#subcommand-0x07---finalise-firmware-update)   | Finalise firmware update?   | `0d 91 01 07 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 07 10 78 00 00` |
+
+
+### Subcommand 0x01 - Initialise Firmware Update?
+
+Unknown.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x02 - Set Failsafe Address?
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                                                                  |
+| ---    | ---  | ---     | ---                                                                      |
+| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmnware region ID                     |
+| 0x0    | 0x4  | Address | Address of failsafe firmware region. Should be either 0x15000 or 0x75000 |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x03 - Set Firmware Image Size?
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                                                       |
+| ---    | ---  | ---     | ---                                                           |
+| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmnware region ID          |
+| 0x0    | 0x4  | Unknown | All `0x00`. Could be a lower offset from the failsafe address |
+| 0x0    | 0x4  | Size    | Firmware update image size in bytes                           |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x04 - Transfer Update Data
+
+Sends a chunk of update data to the controller.
+
+USB connections call this subcommand repeatedly to transfer blocks of up to 0x4C bytes until all data is transferred.
+
+Bluetooth connections call this subcommand via a special characteristic `4147423d-fdae-4df7-a4f7-d23e5df59f8d` (handle `0x0018`) that allows for spanning commands and their data over multiple writes without responses in between. Data is transferred via this characteristic in blocks of up to 0xB5C bytes, comprised of 30 chunks of up to 0x64 bytes each. At the end of each block, a type 0x04 response is received via the usual command interface. The final chunk of data often doesn't need to span multiple commands and is also transferred using the usual command interface.
+
+**Request data:**
+
+| Offset | Size     | Value   | Comment                       |
+| ---    | ---      | ---     | ---                           |
+| 0x0    | 0x4      | Length  | Length of the following data  |
+| 0x4    | 0x0-0x4C | Data    | The next chunk of update data |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x05 - End Data Transfer?
+
+Unknown. Called after last 0x04 subcommand.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x06 - Verify Firmware Update?
+
+Unknown. Takes the same paramaters as subcommand 0x03 with an additional checksum. Likely for verifying the update was written correctly.
+
+**Request data:**
+
+| Offset | Size | Value    | Comment                                                       |
+| ---    | ---  | ---      | ---                                                           |
+| 0x0    | 0x1  | Unknown  | Always `0x02`. Possibly failsafe firmnware region ID          |
+| 0x0    | 0x4  | Unknown  | All `0x00`. Could be a lower offset from the failsafe address |
+| 0x0    | 0x4  | Size     | Firmware update image size in bytes                           |
+| 0x0    | 0x4  | Checksum | CRC-32 checksum of the firmware update image (Little-Endian)  |
+
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x07 - Finalise Firmware Update?
+
+Unknown. Final firmware update subcommand called before controller is rebooted.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+---
 
 ## Command 0x0E - Unknown
+
+*Seems to be unused*
+
+---
 
 ## Command 0x0F - Unknown
 
@@ -179,11 +586,28 @@
 | ---     | ---        | ---   | ---             | ---              |
 | `0x0F`  | `0x04`     |       |                 |                  |
 
+---
+
 ## Command 0x10 - Unknown
 
 | Command | Subcommand | Usage   | Example Request           | Example Response                                                |
 | ---     | ---        | ---     | ---                       | ---                                                             |
 | `0x10`  | `0x01`     | Unknown | `10 91 01 01 00 00 00 00` | `10 01 01 01 10 78 00 00` `01 00 0e 01 0c 00 00 00 ff ff ff ff` |
+
+
+### Subcommand 0x01 - Unknown
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0xC  | Unknown |         |
+
+---
 
 ## Command 0x11 - Unknown
 
@@ -193,15 +617,27 @@
 | `0x11`  | `0x03`     | Unknown | `11 91 01 03 00 00 00 00` | `11 01 01 03 10 78 00 00` `01 20 03 00 00 0a e8 1c 3b 79 7d 8b 3a 0a e8 9c 42 58 a0 0b 42 0a e8 9c 41 58 a0 0b 41` |
 | `0x11`  | `0x04`     |         |                           |                                                                                                                    |
 
+---
+
 ## Command 0x12 - Unknown
 
+*Seems to be unused*
+
+---
+
 ## Command 0x13 - Unknown
+
+*Seems to be unused*
+
+---
 
 ## Command 0x14 - Unknown
 
 | Command | Subcommand | Usage | Example Request | Example Response |
 | ---     | ---        | ---   | ---             | ---              |
 | `0x14`  | `0x01`     |       |                 |                  |
+
+---
 
 ## Command 0x15 - Bluetooth Pairing
 
@@ -213,6 +649,7 @@ These commands are used for pairing the controller to the host instead of the st
 | `0x15`  | [`0x02`](#subcommand-0x02---confirm-ltk)        | Confirm LTK challenge/response | `15 91 01 02 00 11 00 00` `00 6f c6 df 8a d8 fe df 15 bb 8c 15 e9 1f 32 05 44` | `15 01 01 02 10 78 00 00` `01 13 4c 97 f5 11 b9 b6 dd 4d 86 fd 40 f5 36 e9 ed` |
 | `0x15`  | [`0x03`](#subcommand-0x03---finalise-pairing)   | Finalise pairing               | `15 91 01 03 00 01 00 00` `00`                                                 | `15 01 01 03 10 78 00 00` `01`                                                 |
 | `0x15`  | [`0x04`](#subcommand-0x04---exchange-keys)      | Exchange LTK components        | `15 91 01 04 00 11 00 00` `00 35 03 e9 29 82 87 71 24 be a8 0c 66 46 15 83 4b` | `15 01 01 04 10 78 00 00` `01 5c f6 ee 79 2c df 05 e1 ba 2b 63 25 c4 1a 5f 10` |
+
 
 ### Subcommand 0x01 - Exchange Addresses
 
@@ -235,9 +672,10 @@ Exchange Bluetooth adapter addresses between host and controller to be stored al
 | 0x2    | 0x1  | Count?  | Always `0x01`, below could be another list with a single item |
 | 0x3    | 0x6  | Address | Controller Bluetooth address (reverse byte-order)             |
 
+
 ### Subcommand 0x02 - Confirm LTK
 
-Send a 16-byte challenge to the controller. The controller computes the response $B2 = \text{AES}^{128}_{LTK}(A2)$. That is, the challenge (`A2`) is encrypted with the `LTK` derived from [subcommand 0x04](#subcommand-0x04---exchange-keys) using AES128 in ECB mode. Since the challenge/response are transmitted in reverse byte-order, they must be byte-reversed for this computation.
+Send a 16-byte challenge to the controller. The controller computes the response $B2 = \text{AES}^{128}_{LTK}(A2)$. That is, the challenge (`A2`) is encrypted using AES128 in ECB mode with the `LTK` (derived from data exchanged with [subcommand 0x04](#subcommand-0x04---exchange-keys)). Since the challenge/response are transmitted in reverse byte-order, they must be byte-reversed for this computation.
 
 **Request data:**
 
@@ -252,6 +690,7 @@ Send a 16-byte challenge to the controller. The controller computes the response
 | ---    | ---  | ---      | ---                                         |
 | 0x0    | 0x1  | Unknown  | Always `0x01` for response                  |
 | 0x1    | 0x10 | Response | Device response (`B2`) (reverse byte-order) |
+
 
 ### Subcommand 0x03 - Finalise Pairing
 
@@ -268,6 +707,7 @@ Finalise the pairing procedure and commit the host addresses and Bluetooth LTK t
 | Offset | Size | Value   | Comment                    |
 | ---    | ---  | ---     | ---                        |
 | 0x0    | 0x1  | Unknown | Always `0x01` for response |
+
 
 ### Subcommand 0x04 - Exchange Keys
 
@@ -287,13 +727,34 @@ Exchange 16-byte public keys between host and controller. The shared Bluetooth L
 | 0x0    | 0x1  | Unknown    | Always `0x01` for response                                                         |
 | 0x1    | 0x10 | Device key | Device key (`B1`) (reverse byte-order) - always `5CF6EE792CDF05E1BA2B6325C41A5F10` |
 
+---
+
 ## Command 0x16 - Unknown
 
 | Command | Subcommand | Usage   | Example Request           | Example Response                                                                                    |
 | ---     | ---        | ---     | ---                       | ---                                                                                                 |
 | `0x16`  | `0x01`     | Unknown | `16 91 01 01 00 00 00 00` | `16 01 01 01 10 78 00 00` `00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` |
 
+
+### Subcommand 0x01 - Unknown
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value    | Comment    |
+| ---    | ---  | ---      | ---        |
+| 0x0    | 0x18  | Unknown | All `0x00` |
+
+---
+
 ## Command 0x17 - Unknown
+
+*Possibly unused*
+
+---
 
 ## Command 0x18 - Unknown
 
@@ -303,3 +764,16 @@ Exchange 16-byte public keys between host and controller. The shared Bluetooth L
 | `0x18`  | `0x02`     |         |                           |                                                     |
 | `0x18`  | `0x03`     |         |                           |                                                     |
 | `0x18`  | `0x04`     |         |                           |                                                     |
+
+
+### Subcommand 0x01 - Unknown
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x8  | Unknown |         |
