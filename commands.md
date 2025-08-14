@@ -151,7 +151,7 @@ Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write 
 | `0x03`  | `0x09`                                           | Unknown             | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
 | `0x03`  | [`0x0A`](#subcommand-0x0a---select-input-report) | Select input report | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
 | `0x03`  | `0x0C`                                           | Unknown             | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
-| `0x03`  | `0x0D`                                           | Unknown             | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
+| `0x03`  | `0x0D`                                           | Initialise USB      | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
 | `0x03`  | `0x0F`                                           |                     |                                                                                               |                                         |
 
 
@@ -186,14 +186,14 @@ Unknown.
 
 ### Subcommand 0x0A - Select Input Report
 
-Selects one of the input report formats found in the HID report descriptor. Invalid report IDs are ignored. Defaults to [`0x09`](input_reports.md#input-report-0x09) on power-up.
+Selects one of the input report formats found in the HID report descriptor. Invalid report IDs are ignored. Defaults to [`0x07`](input_reports.md#input-report-0x07)|[`0x08`](input_reports.md#input-report-0x08)|[`0x09`](input_reports.md#input-report-0x09)|[`0x0A`](input_reports.md#input-report-0x0a) (depending on controller type) on power-up.
 
 **Request data:**
 
-| Offset | Size | Value     | Comment                                                                                                              |
-| ---    | ---  | ---       | ---                                                                                                                  |
-| 0x0    | 0x1  | Report ID | Input report ID. Either [`0x05`](input_reports.md#input-report-0x05) or [`0x09`](input_reports.md#input-report-0x09) |
-| 0x1    | 0x3  | Unknown   | Seems to be unused                                                                                                   |
+| Offset | Size | Value     | Comment                                                                                                                                                                                                                                                        |
+| ---    | ---  | ---       | ---                                                                                                                                                                                                                                                            |
+| 0x0    | 0x1  | Report ID | Input report ID. Either [`0x05`](input_reports.md#input-report-0x05) or [`0x07`](input_reports.md#input-report-0x07)\|[`0x08`](input_reports.md#input-report-0x08)\|[`0x09`](input_reports.md#input-report-0x09)\|[`0x0A`](input_reports.md#input-report-0x0a) |
+| 0x1    | 0x3  | Unknown   | Seems to be unused                                                                                                                                                                                                                                             |
 
 **Response data:** 
 
@@ -215,9 +215,9 @@ Unknown.
 *None*
 
 
-### Subcommand 0x0D - Unknown
+### Subcommand 0x0D - Initialise USB
 
-Unknown.
+Initialise the controller for USB. Required before the controller will send input reports over USB. Host address doesn't need to be valid.
 
 **Request data:**
 

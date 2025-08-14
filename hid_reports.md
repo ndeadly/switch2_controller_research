@@ -1,18 +1,39 @@
-# HID Input Reports
+# HID Reports
 
-There are two HID input report formats, with IDs `0x05` and `0x09`. Both reports are the same between USB and Bluetooth interfaces, except Bluetooth reports omit the first byte containing the report ID since they are uniquely identified by their associated GATT characteristic and its UUID or handle. The offsets listed here don't account for the report ID, so must be incremented by one if you are working with packets transmitted over USB.
+Each controller has 2 input report formats and one output format available, as seen in the USB HID report [descriptors](descriptors.md#descriptors). The first report [`0x05`](#input-report-0x05) is common to all controllers. The other two are controller-specific. Report availability is outlined in the table below. By default, Nintendo uses input report ID #2 for both USB and Bluetooth connections. It is not known if input report ID #1 is currently used officially.
 
-USB reports are activated by sending command `0x03` to the command endpoint. Official software sends `03 91 00 0D 00 08 00 00 01 00 FF FF FF FF FF FF`, where the `0xFF` values are the host Bluetooth address in little-endian byte order. However, we can omit the Bluetooth address and leave it as 0xFF if not performing wired pairing. This is followed up by another command `03 91 00 0A 00 04 00 00 09 00 00 00` to select the input report ID via byte 8.
+| Controller              | Input Report ID #1         | Input Report ID #2         | Output Report ID            |
+| ---                     | ---                        | ---                        | ---                         |
+| JoyCon 2 (L)            | [0x05](#input-report-0x05) | [0x07](#input-report-0x07) | [0x01](#output-report-0x01) |
+| JoyCon 2 (R)            | [0x05](#input-report-0x05) | [0x08](#input-report-0x08) | [0x01](#output-report-0x01) |
+| Pro Controller 2        | [0x05](#input-report-0x05) | [0x09](#input-report-0x09) | [0x02](#output-report-0x02) |
+| NSO Gamecube Controller | [0x05](#input-report-0x05) | [0x0A](#input-report-0x0a) | [0x03](#output-report-0x03) |
 
-Bluetooth reports are activated by enabling notifications for the appropriate GATT characteristic, by writing the value `0x0001` to its associated Client Characteristic Configuration Descriptor (UUID=`0x2902`). Enabling notifications for one characteristic will disable them for the other, if enabled.
 
-By default, Nintendo uses [report 0x09](#input-report-0x09) on both USB and Bluetooth interfaces. It is not known if [report 0x05](#input-report-0x05) is currently used officially.
+USB input reports are activated by sending [command `0x03`](commands.md#command-0x03---initialisation), [subcommand `0x0D`](commands.md#subcommand-0x0d---initialise-usb). Input report IDs can be selected via [command `0x03`](commands.md#command-0x03---initialisation), [subcommand `0x0A`](commands.md#subcommand-0x0a---select-input-report).
+
+Bluetooth reports omit the report ID, and are instead identified by a dedicated GATT characteristic and its associated UUID and/or handle. Input reports are activated by enabling notifications for the appropriate GATT characteristic (by writing the value `0x0001` to its associated Client Characteristic Configuration Descriptor). Output reports are sent by writing to the appropriate GATT characteristic. See the table below for the mapping between input/output report IDs and equivalent GATT characteristics.
+
+| Report ID                   | Direction | Service UUID                           | Service Handle | Characteristic UUID                    | Characteristic Handle |
+| ---                         | ---       | ---                                    | ---            | ---                                    |---                    |
+| [0x01](#output-report-0x01) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
+| [0x02](#output-report-0x02) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
+| [0x03](#output-report-0x03) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
+| [0x05](#input-report-0x05)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `ab7de9be-89fe-49ad-828f-118f09df7fd2` | `0x000A`              |
+| [0x07](#input-report-0x07)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
+| [0x08](#input-report-0x08)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
+| [0x09](#input-report-0x09)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
+| [0x0A](#input-report-0x0a)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
+
+\* Handle `0x0016` combines both HID output report data and controller [commands](commands.md#commands) into a single attribute write.
+
+*Note: while the handle values appear to be fixed on the console, they are not guaranteed to be identical when connected to other hosts. Typically one would use the attribute UUID to uniquely identify a given attribute, but as can be seen from the UUIDs marked `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` in the table, many of the relevant characteristic UUIDs are non-static and appear to be randomised every time the controller is paired. It is not clear yet whether it's possible to resolve these back to a fixed value.*
 
 ---
 
 ## Input Report 0x05
 
-Sent via GATT handle 0x000A (UUID=`ab7de9be-89fe-49ad-828f-118f09df7fd2`). Common format across all controller types.
+Available on all controller types. Sent via GATT handle 0x000A (UUID=`ab7de9be-89fe-49ad-828f-118f09df7fd2`).
 
 | Offset | Size | Value                                   | Comment                                                                                             |
 | ---    | ---  | ---                                     | ---                                                                                                 |
@@ -75,12 +96,9 @@ Sent via GATT handle 0x000A (UUID=`ab7de9be-89fe-49ad-828f-118f09df7fd2`). Commo
 
 ---
 
-## Input Report #0x09
+## Input Report 0x07
 
-Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always length 0x3F but report format changes depending upon controller type. Pro controller and Gamecube reports are almost identical apart from analog triggers and headset fields but have been documented separately along with controller-specific button labelling to avoid confusion.
-
-
-### Joycon Report
+Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
 
 | Offset | Size | Value                              | Comment                                                      |
 | ---    | ---  | ---                                | ---                                                          |
@@ -98,15 +116,6 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 
 #### Button Format
 
-##### JoyCon (R)
-
-| Byte | 0x80   | 0x40 | 0x20 | 0x10 | 0x08 | 0x04 | 0x02 | 0x01 |
-| ---  | ---    | ---  | ---  | ---  | ---  | ---  | ---  |  --- |
-| 0    | Stick  | Plus | ZR   | R    | X    | Y    | A    | B    |
-| 1    | SL     | SR   | -    | C    | -    | -    | -    | Home |
-
-##### JoyCon (L)
-
 | Byte | 0x80  | 0x40  | 0x20 | 0x10 | 0x08 | 0x04 | 0x02  | 0x01    |
 | ---  | ---   | ---   | ---  | ---  | ---  | ---  | ---   |  ---    |
 | 0    | Stick | Minus | ZL   | L    | Up   | Left | Right | Down    |
@@ -120,14 +129,52 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 0x2    | 0x2  | Delta Y | -                  |
 | 0x4    | 0x1  | Unknown | Lift-off distance? |
 
+---
 
-### Pro Controller Report
+## Input Report 0x08
+
+Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
+
+| Offset | Size | Value                              | Comment                                                      |
+| ---    | ---  | ---                                | ---                                                          |
+| 0x0    | 0x1  | Counter                            | -                                                            |
+| 0x1    | 0x1  | Unknown                            | Power info?                                                  |
+| 0x2    | 0x2  | [Buttons](#button-format-2)        | Bitfield                                                     |
+| 0x4    | 0x1  | Unknown                            | Always 0x07?                                                 |
+| 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                          |
+| 0x8    | 0x1  | Unknown                            | -                                                            |
+| 0x9    | 0x7  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                 |
+| 0xE    | 0x1  | Unknown                            | Always 0                                                     |
+| 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40} |
+| 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format           |
+| 0x38   | 0x7  | Reserved                           | Unused                                                       |
+
+#### Button Format
+
+| Byte | 0x80   | 0x40 | 0x20 | 0x10 | 0x08 | 0x04 | 0x02 | 0x01 |
+| ---  | ---    | ---  | ---  | ---  | ---  | ---  | ---  |  --- |
+| 0    | Stick  | Plus | ZR   | R    | X    | Y    | A    | B    |
+| 1    | SL     | SR   | -    | C    | -    | -    | -    | Home |
+
+#### Mouse Data (relative)
+
+| Offset | Size | Value   | Comment            |
+| ---    | ---  | ---     | ---                |
+| 0x0    | 0x2  | Delta X | -                  |
+| 0x2    | 0x2  | Delta Y | -                  |
+| 0x4    | 0x1  | Unknown | Lift-off distance? |
+
+---
+
+## Input Report 0x09
+
+Only available on Pro Controller 2. Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
 
 | Offset | Size | Value                       | Comment                                                      |
 | ---    | ---  | ---                         | ---                                                          |
 | 0x0    | 0x1  | Counter                     | -                                                            |
 | 0x1    | 0x1  | Power Info                  | Similar to Switch 1 format                                   |
-| 0x2    | 0x3  | [Buttons](#button-format-2) | Bitfield                                                     |
+| 0x2    | 0x3  | [Buttons](#button-format-3) | Bitfield                                                     |
 | 0x5    | 0x3  | Left Analog Stick           | Packed 12-bit values (uncalibrated)                          |
 | 0x8    | 0x3  | Right Analog Stick          | Packed 12-bit values (uncalibrated)                          |
 | 0xB    | 0x1  | Unknown                     | Always 0x38                                                  |
@@ -145,14 +192,17 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 1    | Left Stick  | Minus | ZL   | L    | Up   | Left | Right   | Down |
 | 2    | -           | -     | -    | C    | GL   | GR   | Capture | Home |
 
+---
 
-### NSO Gamecube Controller Report
+## Input Report 0x0A
+
+Only available on NSO Gamecube controllers. Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
 
 | Offset | Size | Value                       | Comment                                                      |
 | ---    | ---  | ---                         | ---                                                          |
 | 0x0    | 0x1  | Counter                     | -                                                            |
 | 0x1    | 0x1  | Power Info                  | Similar to Switch 1 format                                   |
-| 0x2    | 0x3  | [Buttons](#button-format-3) | Bitfield                                                     |
+| 0x2    | 0x3  | [Buttons](#button-format-4) | Bitfield                                                     |
 | 0x5    | 0x3  | Left Analog Stick           | Packed 12-bit values (uncalibrated)                          |
 | 0x8    | 0x3  | Right Analog Stick          | Packed 12-bit values (uncalibrated)                          |
 | 0xB    | 0x1  | Unknown                     | Always 0x38                                                  |
@@ -169,3 +219,21 @@ Sent via GATT handle 0x000E (UUID randomised between devices/pairings). Always l
 | 0    | Right Stick | Plus  | R    | Z    | X    | Y    | A       | B    |
 | 1    | Left Stick  | Minus | L    | ZL   | Up   | Left | Right   | Down |
 | 2    | -           | -     | -    | C    | -    | -    | Capture | Home |
+
+---
+
+## Output Report 0x01
+
+Only available on JoyCon 2.
+
+---
+
+## Output Report 0x02
+
+Only available on Pro Controller 2.
+
+---
+
+## Output Report 0x03
+
+Only available on NSO Gamecube controllers.
