@@ -20,14 +20,12 @@ Bluetooth reports omit the report ID, and are instead identified by a dedicated 
 | [0x02](#output-report-0x02) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
 | [0x03](#output-report-0x03) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
 | [0x05](#input-report-0x05)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `ab7de9be-89fe-49ad-828f-118f09df7fd2` | `0x000A`              |
-| [0x07](#input-report-0x07)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
-| [0x08](#input-report-0x08)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
-| [0x09](#input-report-0x09)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
-| [0x0A](#input-report-0x0a)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x000E`              |
+| [0x07](#input-report-0x07)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `cc1bbbb5-7354-4d32-a716-a81cb241a32a` | `0x000E`              |
+| [0x08](#input-report-0x08)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `d5a9e01e-2ffc-4cca-b20c-8b67142bf442` | `0x000E`              |
+| [0x09](#input-report-0x09)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `7492866c-ec3e-4619-8258-32755ffcc0f8` | `0x000E`              |
+| [0x0A](#input-report-0x0a)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `8261cba1-9435-420c-84d6-f0c75a2c8e4d` | `0x000E`              |
 
 \* Handle `0x0016` combines both HID output report data and controller [commands](commands.md#commands) into a single attribute write.
-
-*Note: while the handle values appear to be fixed on the console, they are not guaranteed to be identical when connected to other hosts. Typically one would use the attribute UUID to uniquely identify a given attribute, but as can be seen from the UUIDs marked `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` in the table, many of the relevant characteristic UUIDs are non-static and appear to be randomised every time the controller is paired. It is not clear yet whether it's possible to resolve these back to a fixed value.*
 
 ---
 

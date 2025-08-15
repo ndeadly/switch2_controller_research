@@ -20,7 +20,7 @@ The 2MB memory is divided into the following sections. All uninitialised/unused 
 | [0x1FA000-0x1FAFFF](#0x1FA000-0x1FAFFF) | 0x1000  | Pairing info               |
 | [0x1FB000-0x1FBFFF](#0x1FB000-0x1FBFFF) | 0x1000  | Unknown                    |
 | [0x1FC000-0x1FCFFF](#0x1FC000-0x1FCFFF) | 0x1000  | User calibration           |
-| [0x1FD000-0x1FDFFF](#0x1FD000-0x1FDFFF) | 0x1000  | Unknown                    |
+| [0x1FD000-0x1FDFFF](#0x1FD000-0x1FDFFF) | 0x1000  | Shipment?                  |
 | [0x1FE000-0x1FEFFF](#0x1FE000-0x1FEFFF) | 0x1000  | Unknown                    |
 | [0x1FF000-0x1FFFFF](#0x1FF000-0x1FFFFF) | 0x1000  | Unknown                    |
 
@@ -58,29 +58,31 @@ Uninitialised on original factory firmware. After update first 2 bytes are initi
 
 This section contains factory data defining the controller specific parameters such as serial, vendor & product ids, colours etc. Not all fields are initialised for all controller types.
 
-| Offset  | Size | Example                                                                                                                                              | Usage                |
-| ---     | ---  | ---                                                                                                                                                  | ---                  |
-| 0x13000 | 0x2  | `01 00`                                                                                                                                              | Unknown              |
-| 0x13002 | 0x10 | `48 45 4A 37 31 30 30 31 31 32 31 32 34 37 00 00`                                                                                                    | Serial number        |
-| 0x13012 | 0x2  | `7E 05`                                                                                                                                              | Vendor ID            |
-| 0x13014 | 0x2  | `69 20`                                                                                                                                              | Product ID           |
-| 0x13016 | 0x3  | `01 06 01`                                                                                                                                           | Unknown              |
-| 0x13019 | 0x3  | `23 23 23`                                                                                                                                           | Controller colour #1 |
-| 0x1301C | 0x3  | `A0 A0 A0`                                                                                                                                           | Controller colour #2 |
-| 0x1301F | 0x3  | `E6 E6 E6`                                                                                                                                           | Controller colour #3 |
-| 0x13022 | 0x3  | `32 32 32`                                                                                                                                           | Controller colour #4 |
-| 0x13040 | 0x10 | `3B E0 D3 41 C6 60 6A BC 4D D7 A2 BB 71 1E DD 37`                                                                                                    | Unknown              |
-| 0x13060 | 0x4  | `4C 09 00 00`                                                                                                                                        | Unknown              |
-| 0x13080 | 0x41 | `01 AD D9 9A 55 56 65 A0 00 0A A0 00 0A E2 20 0E E2 20 0E 9A AD D9 9A AD D9 0A A5 50 0A A5 50 2F F6 62 2F F6 62 0A FF FF B3 67 83 2E 66 5E 3A 06 5F` | Unknown              |
-| 0x130C0 | 0x41 | `01 AD D9 9A 55 56 65 A0 00 0A A0 00 0A E2 20 0E E2 20 0E 9A AD D9 9A AD D9 0A A5 50 0A A5 50 2F F6 62 2F F6 62 0A FF FF 2C 08 84 D1 65 63 2A 26 62` | Unknown              |
-| 0x13100 | 0x18 | `00 00 00 00 00 00 00 00 00 00 00 00 A6 F2 62 BD A8 00 08 3D 2F ED 20 41`                                                                            | Unknown              |
-| 0x13140 | 0x9  | `00 D7 A3 BC 41 D7 A3 BC 41`                                                                                                                         | Unknown              |
-| 0x13E00 | 0x20 | `31 37 31 35 32 35 32 38 4C 44 31 37 34 33 31 30 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00`                                                    | Unknown serial       |
-| 0x13E20 | 0x4  | `01 02 02 02`                                                                                                                                        | Unknown              |
-| 0x13E30 | 0xA  | `03 02 04 01 05 02 06 02 07 02`                                                                                                                      | Unknown              |
-| 0x13E60 | 0x2  | `11 00`                                                                                                                                              | Unknown              |
-| 0x13E80 | 0x9  | `00 23 E9 CE 00 41 30 4B 41`                                                                                                                         | Unknown              |
-| 0x13EFB | 0x4  | `01 00 15 0C`                                                                                                                                        | Unknown              |
+| Offset  | Size | Example                                                                                                                   | Usage                              |
+| ---     | ---  | ---                                                                                                                       | ---                                |
+| 0x13000 | 0x2  | `01 00`                                                                                                                   | Unknown                            |
+| 0x13002 | 0x10 | `48 45 4A 37 31 30 30 31 31 32 31 32 34 37 00 00`                                                                         | Serial number                      |
+| 0x13012 | 0x2  | `7E 05`                                                                                                                   | Vendor ID                          |
+| 0x13014 | 0x2  | `69 20`                                                                                                                   | Product ID                         |
+| 0x13016 | 0x3  | `01 06 01`                                                                                                                | Unknown                            |
+| 0x13019 | 0x3  | `23 23 23`                                                                                                                | Controller body colour             |
+| 0x1301C | 0x3  | `A0 A0 A0`                                                                                                                | Controller buttons colour          |
+| 0x1301F | 0x3  | `E6 E6 E6`                                                                                                                | Controller highlight colour        |
+| 0x13022 | 0x3  | `32 32 32`                                                                                                                | Controller grip colour             |
+| 0x13040 | 0x10 | `3B E0 D3 41 C6 60 6A BC 4D D7 A2 BB 71 1E DD 37`                                                                         | Unknown                            |
+| 0x13060 | 0x4  | `4C 09 00 00`                                                                                                             | Unknown                            |
+| 0x13080 | 0x28 | `01 AD D9 9A 55 56 65 A0 00 0A A0 00 0A E2 20 0E E2 20 0E 9A AD D9 9A AD D9 0A A5 50 0A A5 50 2F F6 62 2F F6 62 0A FF FF` | Unknown                            |
+| 0x130A8 | 0x9  | `B3 67 83 2E 66 5E 3A 06 5F`                                                                                              | Primary analog stick calibration   |
+| 0x130C0 | 0x28 | `01 AD D9 9A 55 56 65 A0 00 0A A0 00 0A E2 20 0E E2 20 0E 9A AD D9 9A AD D9 0A A5 50 0A A5 50 2F F6 62 2F F6 62 0A FF FF` | Unknown                            |
+| 0x130E8 | 0x9  | `2C 08 84 D1 65 63 2A 26 62`                                                                                              | Secondary analog stick calibration |
+| 0x13100 | 0x18 | `00 00 00 00 00 00 00 00 00 00 00 00 A6 F2 62 BD A8 00 08 3D 2F ED 20 41`                                                 | Unknown                            |
+| 0x13140 | 0x9  | `00 D7 A3 BC 41 D7 A3 BC 41`                                                                                              | Unknown                            |
+| 0x13E00 | 0x20 | `31 37 31 35 32 35 32 38 4C 44 31 37 34 33 31 30 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00`                         | Unknown serial                     |
+| 0x13E20 | 0x4  | `01 02 02 02`                                                                                                             | Unknown                            |
+| 0x13E30 | 0xA  | `03 02 04 01 05 02 06 02 07 02`                                                                                           | Unknown                            |
+| 0x13E60 | 0x2  | `11 00`                                                                                                                   | Unknown                            |
+| 0x13E80 | 0x9  | `00 23 E9 CE 00 41 30 4B 41`                                                                                              | Unknown                            |
+| 0x13EFB | 0x4  | `01 00 15 0C`                                                                                                             | Unknown                            |
 
 ## 0x15000-0x74FFF
 
@@ -125,11 +127,11 @@ Unknown. Data here seems unique to controller types, but doesn't change between 
 
 User calibration data. Uninitialised unless a user calibration has been performed.
 
-| Offset   | Size | Example | Usage                      |
-| ---      | ---  | ---     | ---                        |
-| 0x1FC000 | 0x40 | ``      | Motion calibration         |
-| 0x1FC040 | 0xB  | ``      | Analog stick L calibration |
-| 0x1FC060 | 0xB  | ``      | Analog stick R calibration |
+| Offset   | Size | Example | Usage                              |
+| ---      | ---  | ---     | ---                                |
+| 0x1FC000 | 0x40 | ``      | Motion calibration                 |
+| 0x1FC040 | 0xB  | ``      | Primary analog stick calibration   |
+| 0x1FC060 | 0xB  | ``      | Secondary analog stick calibration |
 
 ## 0x1FD000-0x1FDFFF
 

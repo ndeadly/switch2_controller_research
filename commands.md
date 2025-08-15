@@ -186,14 +186,14 @@ Unknown.
 
 ### Subcommand 0x0A - Select Input Report
 
-Selects one of the input report formats found in the HID report descriptor. Invalid report IDs are ignored. Defaults to [`0x07`](input_reports.md#input-report-0x07)|[`0x08`](input_reports.md#input-report-0x08)|[`0x09`](input_reports.md#input-report-0x09)|[`0x0A`](input_reports.md#input-report-0x0a) (depending on controller type) on power-up.
+Selects one of the input report formats found in the HID report descriptor. Invalid report IDs are ignored. Defaults to [`0x07`](hid_reports.md#input-report-0x07)|[`0x08`](hid_reports.md#input-report-0x08)|[`0x09`](hid_reports.md#input-report-0x09)|[`0x0A`](hid_reports.md#input-report-0x0a) (depending on controller type) on power-up.
 
 **Request data:**
 
-| Offset | Size | Value     | Comment                                                                                                                                                                                                                                                        |
-| ---    | ---  | ---       | ---                                                                                                                                                                                                                                                            |
-| 0x0    | 0x1  | Report ID | Input report ID. Either [`0x05`](input_reports.md#input-report-0x05) or [`0x07`](input_reports.md#input-report-0x07)\|[`0x08`](input_reports.md#input-report-0x08)\|[`0x09`](input_reports.md#input-report-0x09)\|[`0x0A`](input_reports.md#input-report-0x0a) |
-| 0x1    | 0x3  | Unknown   | Seems to be unused                                                                                                                                                                                                                                             |
+| Offset | Size | Value     | Comment                                                                                                                                                                                                                                              |
+| ---    | ---  | ---       | ---                                                                                                                                                                                                                                                  |
+| 0x0    | 0x1  | Report ID | Input report ID. Either [`0x05`](hid_reports.md#input-report-0x05) or [`0x07`](hid_reports.md#input-report-0x07)\|[`0x08`](hid_reports.md#input-report-0x08)\|[`0x09`](hid_reports.md#input-report-0x09)\|[`0x0A`](hid_reports.md#input-report-0x0a) |
+| 0x1    | 0x3  | Unknown   | Seems to be unused                                                                                                                                                                                                                                   |
 
 **Response data:** 
 
@@ -481,10 +481,10 @@ Unknown.
 
 **Request data:**
 
-| Offset | Size | Value   | Comment                                                                  |
-| ---    | ---  | ---     | ---                                                                      |
-| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmnware region ID                     |
-| 0x0    | 0x4  | Address | Address of failsafe firmware region. Should be either 0x15000 or 0x75000 |
+| Offset | Size | Value   | Comment                                                                                  |
+| ---    | ---  | ---     | ---                                                                                      |
+| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmware region ID                                      |
+| 0x0    | 0x4  | Address | Address of failsafe firmware region (Little-Endian). Should be either 0x15000 or 0x75000 |
 
 **Response data:** 
 
@@ -499,9 +499,9 @@ Unknown.
 
 | Offset | Size | Value   | Comment                                                       |
 | ---    | ---  | ---     | ---                                                           |
-| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmnware region ID          |
+| 0x0    | 0x1  | Unknown | Always `0x02`. Possibly failsafe firmware region ID           |
 | 0x0    | 0x4  | Unknown | All `0x00`. Could be a lower offset from the failsafe address |
-| 0x0    | 0x4  | Size    | Firmware update image size in bytes                           |
+| 0x0    | 0x4  | Size    | Firmware update image size in bytes (Little-Endian)           |
 
 **Response data:** 
 
@@ -510,7 +510,7 @@ Unknown.
 
 ### Subcommand 0x04 - Transfer Update Data
 
-Sends a chunk of update data to the controller.
+Transfers a chunk of update data to the controller.
 
 USB connections call this subcommand repeatedly to transfer blocks of up to 0x4C bytes until all data is transferred.
 
@@ -549,9 +549,9 @@ Unknown. Takes the same paramaters as subcommand 0x03 with an additional checksu
 
 | Offset | Size | Value    | Comment                                                       |
 | ---    | ---  | ---      | ---                                                           |
-| 0x0    | 0x1  | Unknown  | Always `0x02`. Possibly failsafe firmnware region ID          |
+| 0x0    | 0x1  | Unknown  | Always `0x02`. Possibly failsafe firmware region ID           |
 | 0x0    | 0x4  | Unknown  | All `0x00`. Could be a lower offset from the failsafe address |
-| 0x0    | 0x4  | Size     | Firmware update image size in bytes                           |
+| 0x0    | 0x4  | Size     | Firmware update image size in bytes (Little-Endian)           |
 | 0x0    | 0x4  | Checksum | CRC-32 checksum of the firmware update image (Little-Endian)  |
 
 
