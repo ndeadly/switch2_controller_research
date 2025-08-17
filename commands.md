@@ -752,21 +752,40 @@ Exchange 16-byte public keys between host and controller. The shared Bluetooth L
 
 ## Command 0x17 - Unknown
 
-*Possibly unused*
+| Command | Subcommand | Usage   | Example Request                                  | Example Response          |
+| ---     | ---        | ---     | ---                                              | ---                       |
+| `0x17`  | `0x02`     | Unknown | `17 91 01 02 00 07 00 00` `80 bb 00 00 02 f0 00` | `17 01 01 02 10 78 00 00` |
+
+
+### Subcommand 0x02 - Unknown
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x7  | Unknown |         |
+
+**Response data:** 
+
+*None*
 
 ---
 
 ## Command 0x18 - Unknown
 
-| Command | Subcommand | Usage   | Example Request           | Example Response                                    |
-| ---     | ---        | ---     | ---                       | ---                                                 |
-| `0x18`  | `0x01`     | Unknown | `18 91 01 01 00 00 00 00` | `18 01 01 01 10 78 00 00` `00 00 40 f0 00 00 60 00` |
-| `0x18`  | `0x02`     |         |                           |                                                     |
-| `0x18`  | `0x03`     |         |                           |                                                     |
-| `0x18`  | `0x04`     |         |                           |                                                     |
+| Command | Subcommand | Usage   | Example Request                | Example Response                                    |
+| ---     | ---        | ---     | ---                            | ---                                                 |
+| `0x18`  | `0x01`     | Unknown | `18 91 01 01 00 00 00 00`      | `18 01 01 01 10 78 00 00` `00 00 40 f0 00 00 60 00` |
+| `0x18`  | `0x02`     |         |                                |                                                     |
+| `0x18`  | `0x03`     | Unknown | `18 91 01 03 00 01 00 00` `07` | `18 01 01 03 10 78 00 00` `07`                      |
+| `0x18`  | `0x04`     |         |                                |                                                     |
 
 
 ### Subcommand 0x01 - Unknown
+
+Unknown.
 
 **Request data:**
 
@@ -777,3 +796,20 @@ Exchange 16-byte public keys between host and controller. The shared Bluetooth L
 | Offset | Size | Value   | Comment |
 | ---    | ---  | ---     | ---     |
 | 0x0    | 0x8  | Unknown |         |
+
+### Subcommand 0x03 - Unknown
+
+Unknown.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x1  | Unknown |         |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x1  | Unknown |         |
+
