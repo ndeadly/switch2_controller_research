@@ -14,18 +14,18 @@ USB input reports are activated by sending [command `0x03`](commands.md#command-
 
 Bluetooth reports omit the report ID, and are instead identified by a dedicated GATT characteristic and its associated UUID and/or handle. Input reports are activated by enabling notifications for the appropriate GATT characteristic (by writing the value `0x0001` to its associated Client Characteristic Configuration Descriptor). Output reports are sent by writing to the appropriate GATT characteristic. See the table below for the mapping between input/output report IDs and equivalent GATT characteristics.
 
-| Report ID                   | Direction | Service UUID                           | Service Handle | Characteristic UUID                    | Characteristic Handle |
-| ---                         | ---       | ---                                    | ---            | ---                                    |---                    |
-| [0x01](#output-report-0x01) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
-| [0x02](#output-report-0x02) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
-| [0x03](#output-report-0x03) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | `0x0012`/`0x0016`*    |
-| [0x05](#input-report-0x05)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `ab7de9be-89fe-49ad-828f-118f09df7fd2` | `0x000A`              |
-| [0x07](#input-report-0x07)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `cc1bbbb5-7354-4d32-a716-a81cb241a32a` | `0x000E`              |
-| [0x08](#input-report-0x08)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `d5a9e01e-2ffc-4cca-b20c-8b67142bf442` | `0x000E`              |
-| [0x09](#input-report-0x09)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `7492866c-ec3e-4619-8258-32755ffcc0f8` | `0x000E`              |
-| [0x0A](#input-report-0x0a)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `8261cba1-9435-420c-84d6-f0c75a2c8e4d` | `0x000E`              |
+| Report ID                   | Direction | Service UUID                           | Service Handle | Characteristic UUID(s)                                                             | Characteristic Handle |
+| ---                         | ---       | ---                                    | ---            | ---                                                                                |---                    |
+| [0x01](#output-report-0x01) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `289326cb-a471-485d-a8f4-240c14f18241`<br />`fa19b0fb-cd1f-46a7-84a1-bbb09e00c149` | `0x0012`*             |
+| [0x02](#output-report-0x02) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `cc483f51-9258-427d-a939-630c31f72b05`                                             | `0x0012`*             |
+| [0x03](#output-report-0x03) | Output    | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `3f8fb670-ab25-45bf-b540-38c72834d064`                                             | `0x0012`*             |
+| [0x05](#input-report-0x05)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `ab7de9be-89fe-49ad-828f-118f09df7fd2`                                             | `0x000A`              |
+| [0x07](#input-report-0x07)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `cc1bbbb5-7354-4d32-a716-a81cb241a32a`                                             | `0x000E`              |
+| [0x08](#input-report-0x08)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `d5a9e01e-2ffc-4cca-b20c-8b67142bf442`                                             | `0x000E`              |
+| [0x09](#input-report-0x09)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `7492866c-ec3e-4619-8258-32755ffcc0f8`                                             | `0x000E`              |
+| [0x0A](#input-report-0x0a)  | Input     | `ab7de9be-89fe-49ad-828f-118f09df7fd0` | `0x0008`       | `8261cba1-9435-420c-84d6-f0c75a2c8e4d`                                             | `0x000E`              |
 
-\* Handle `0x0016` combines both HID output report data and controller [commands](commands.md#commands) into a single attribute write.
+\* Handle `0x0016` can also be used to combine both HID output report data and controller [commands](commands.md#commands) into a single attribute write.
 
 ---
 
@@ -96,7 +96,7 @@ Available on all controller types. Sent via GATT handle 0x000A (UUID=`ab7de9be-8
 
 ## Input Report 0x07
 
-Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
+Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID=`cc1bbbb5-7354-4d32-a716-a81cb241a32a`)
 
 | Offset | Size | Value                              | Comment                                                      |
 | ---    | ---  | ---                                | ---                                                          |
@@ -131,7 +131,7 @@ Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID randomised bet
 
 ## Input Report 0x08
 
-Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
+Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID=`d5a9e01e-2ffc-4cca-b20c-8b67142bf442`)
 
 | Offset | Size | Value                              | Comment                                                      |
 | ---    | ---  | ---                                | ---                                                          |
@@ -166,7 +166,7 @@ Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID randomised bet
 
 ## Input Report 0x09
 
-Only available on Pro Controller 2. Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
+Only available on Pro Controller 2. Sent via GATT handle 0x000E (UUID=`7492866c-ec3e-4619-8258-32755ffcc0f8`)
 
 | Offset | Size | Value                       | Comment                                                      |
 | ---    | ---  | ---                         | ---                                                          |
@@ -194,7 +194,7 @@ Only available on Pro Controller 2. Sent via GATT handle 0x000E (UUID randomised
 
 ## Input Report 0x0A
 
-Only available on NSO Gamecube controllers. Sent via GATT handle 0x000E (UUID randomised between devices/pairings)
+Only available on NSO Gamecube controllers. Sent via GATT handle 0x000E (UUID=`8261cba1-9435-420c-84d6-f0c75a2c8e4d`)
 
 | Offset | Size | Value                       | Comment                                                      |
 | ---    | ---  | ---                         | ---                                                          |
