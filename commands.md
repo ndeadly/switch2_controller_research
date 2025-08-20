@@ -63,6 +63,7 @@ Most commands listed below with example data have been observed in use by the co
 | `0x01`  | `0x05`     |       |                           |                                         |
 | `0x01`  | `0x06`     |       |                           |                                         |
 | `0x01`  | `0x0C`     |       | `01 91 01 0c 00 00 00 00` | `01 01 01 0c 10 78 00 00` `61 12 50 0d` |
+| `0x01`  | `0x14`     |       |                           |                                         |
 
 
 ### Subcommand 0x0C - Unknown
@@ -582,8 +583,12 @@ Unknown. Final firmware update subcommand called before controller is rebooted.
 
 ## Command 0x0F - Unknown
 
+Unknown.
+
 | Command | Subcommand | Usage | Example Request | Example Response |
 | ---     | ---        | ---   | ---             | ---              |
+| `0x0F`  | `0x01`     |       |                 |                  |
+| `0x0F`  | `0x02`     |       |                 |                  |
 | `0x0F`  | `0x04`     |       |                 |                  |
 
 ---
