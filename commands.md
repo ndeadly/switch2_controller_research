@@ -397,12 +397,59 @@ Sends raw vibration data/commands to the controller.
 
 ## Command 0x0B - Battery
 
-| Command | Subcommand | Usage | Example Request | Example Response |
-| ---     | ---        | ---   | ---             | ---              |
-| `0x0B`  | `0x03`     |       |                 |                  |
-| `0x0B`  | `0x04`     |       |                 |                  |
-| `0x0B`  | `0x06`     |       |                 |                  |
-| `0x0B`  | `0x07`     |       |                 |                  |
+| Command | Subcommand                                       | Usage               | Example Request           | Example Response                        |
+| ---     | ---                                              | ---                 | ---                       | ---                                     |
+| `0x0B`  | [`0x03`](#subcommand-0x03---get-battery-voltage) | Get battery voltage | `0b 91 00 03 00 00 00 00` | `0b 01 00 03 10 78 00 00` `a5 0e 00 00` |
+| `0x0B`  | [`0x04`](#subcommand-0x04---get-charge-status)   | Get charge status   | `0b 91 00 04 00 00 00 00` | `0b 01 00 04 10 78 00 00` `34 00 83 00` |
+| `0x0B`  | `0x06`                                           | Unknown             | `0b 91 00 06 00 00 00 00` | `0b 01 00 06 10 78 00 00` `11 00 00 00` |
+| `0x0B`  | `0x07`                                           |                     |                           |                                         |
+
+
+### Subcommand 0x03 - Get Battery Voltage
+
+Returns the current battery voltage in mV. .
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment                                                                                                                         |
+| ---    | ---  | ---     | ---                                                                                                                             |
+| 0x0    | 0x2  | Voltage | Battery voltage in mV. This is the same value found in input report [`0x05`](hid_reports.md#input-report-0x05) at offset `0x1F` |
+| 0x2    | 0x2  | Unknown | Possibly padding                                                                                                                |
+
+
+### Subcommand 0x04 - Get Charge Status
+
+Returns the charging status and what seems to be some flags.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value         | Comment                                                                                                                   |
+| ---    | ---  | ---           | ---                                                                                                                       |
+| 0x0    | 0x2  | Charge status | Charging status. This is the same value found in input report [`0x05`](hid_reports.md#input-report-0x05) at offset `0x21` |
+| 0x2    | 0x2  | Unknown       | Seems to be a set of flags?                                                                                               |
+
+
+### Subcommand 0x06 - Unknown
+
+Unknown.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x4  | Unknown | Seems to be always `0x00000011` |
 
 ---
 
