@@ -407,7 +407,7 @@ Sends raw vibration data/commands to the controller.
 
 ### Subcommand 0x03 - Get Battery Voltage
 
-Returns the current battery voltage in mV. .
+Returns the current battery voltage in mV.
 
 **Request data:**
 
@@ -455,23 +455,40 @@ Unknown.
 
 ## Command 0x0C - Feature Select
 
-| Command | Subcommand                                         | Usage                   | Example Request                         | Example Response                        |
-| ---     | ---                                                | ---                     | ---                                     | ---                                     |
-| `0x0C`  | `0x01`                                             |                         |                                         |                                         |
-| `0x0C`  | [`0x02`](#subcommand-0x02---init-feature-flags)    | Init feature flags?     | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | `0x03`                                             |                         |                                         |                                         |
-| `0x0C`  | [`0x04`](#subcommand-0x04---confirm-feature-flags) | Confirm feature flags?  | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | `0x05`                                             |                         |                                         |                                         |
+These commands are used for configuring which features are enabled in the HID reports sent by the controller.
+
+| Command | Subcommand                                       | Usage               | Example Request                         | Example Response                        |
+| ---     | ---                                              | ---                 | ---                                     | ---                                     |
+| `0x0C`  | `0x01`                                           |                     |                                         |                                         |
+| `0x0C`  | [`0x02`](#subcommand-0x02---initialise-features) | Initialise features | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00` |
+| `0x0C`  | `0x03`                                           |                     |                                         |                                         |
+| `0x0C`  | [`0x04`](#subcommand-0x04---enable-features)     | Enable features     | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00` |
+| `0x0C`  | [`0x05`](#subcommand-0x05---disable-features)    | Disable features    | `0c 91 01 05 00 04 00 00` `10 00 00 00` | `0c 01 01 05 10 78 00 00` `00 00 00 00` |
+
+##### Feature Flags:
+
+| Bit | Mask   | Feature       | Comment                   |
+| --- | ---    | ---           | ---                       |
+| 0   | `0x01` | Button state  |                           |
+| 1   | `0x02` | Analog sticks |                           |
+| 2   | `0x04` | IMU           | Linear accelometer + gyro |
+| 3   | `0x08` | Unknown       |                           |
+| 4   | `0x10` | Mouse data    | JoyCon only               |
+| 5   | `0x20` | Current       | Seems to be JoyCon only   |
+| 6   | `0x40` | Unknown       |                           |
+| 7   | `0x80` | Magnetometer  |                           |
 
 
-### Subcommand 0x02 - Init Feature Flags?
+### Subcommand 0x02 - Initialise Features
+
+Configures the initial set of desired features. Feature flags outside of this mask will be ignored by enable/disable commands.  Must be called at least once prior to subcommands [`0x04`](#subcommand-0x04---enable-features) and [`0x05`](#subcommand-0x05---disable-features).
 
 **Request data:**
 
-| Offset | Size | Value   | Comment            |
-| ---    | ---  | ---     | ---                |
-| 0x0    | 0x1  | Flags   | Feature flags      |
-| 0x1    | 0x3  | Unknown | Seems to be unused |
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
+| 0x1    | 0x3  | Unknown | Seems to be unused              |
 
 **Response data:** 
 
@@ -480,14 +497,34 @@ Unknown.
 | 0x0    | 0x4  | Unknown | All `0x00` |
 
 
-### Subcommand 0x04 - Confirm Feature Flags?
+### Subcommand 0x04 - Enable Features
+
+Enables the selected features.
 
 **Request data:**
 
-| Offset | Size | Value   | Comment            |
-| ---    | ---  | ---     | ---                |
-| 0x0    | 0x1  | Flags   | Feature flags      |
-| 0x1    | 0x3  | Unknown | Seems to be unused |
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
+| 0x1    | 0x3  | Unknown | Seems to be unused              |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment    |
+| ---    | ---  | ---     | ---        |
+| 0x0    | 0x4  | Unknown | All `0x00` |
+
+
+### Subcommand 0x05 - Disable Features
+
+Disables the selected features.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
+| 0x1    | 0x3  | Unknown | Seems to be unused              |
 
 **Response data:** 
 
