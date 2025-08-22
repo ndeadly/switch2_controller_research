@@ -94,7 +94,7 @@ Unknown.
 
 ### Subcommand 0x04 - Memory Read
 
-Read from internal flash [memory](memory_layout.md#memory-layout). Maximum read length is 0x4F bytes. Addresses above 0x200000 are wrapped around to zero.
+Read from internal flash [memory](memory_layout.md#memory-layout). Maximum read length is `0x50` bytes for USB, and `0x4F`for Bluetooth. Addresses above 0x200000 are wrapped around to zero.
 
 **Request data:**
 
@@ -116,7 +116,7 @@ Read from internal flash [memory](memory_layout.md#memory-layout). Maximum read 
 
 ### Subcommand 0x05 - Memory Write
 
-Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write length is 0x4F bytes (I think?)
+Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write length is `0x80` bytes. Only addresses >= `0x1F5000` have write permissions for this command. Attempting to write addresses below this will return status `0x81` in the response.
 
 **Request data:**
 
