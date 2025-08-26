@@ -372,19 +372,97 @@ Unknown. This is the first command sent during initialisation.
 
 ## Command 0x09 - Player LEDs
 
-| Command | Subcommand                                   | Usage                  | Example Request                                     | Example Response          |
-| ---     | ---                                          | ---                    | ---                                                 | ---                       |
-| `0x09`  | `0x01`                                       |                        |                                                     |                           |
-| `0x09`  | `0x02`                                       |                        |                                                     |                           |
-| `0x09`  | `0x03`                                       |                        |                                                     |                           |
-| `0x09`  | `0x04`                                       |                        |                                                     |                           |
-| `0x09`  | `0x05`                                       |                        |                                                     |                           |
-| `0x09`  | `0x06`                                       |                        |                                                     |                           |
-| `0x09`  | [`0x07`](#subcommand-0x07---set-player-leds) | Set player LED pattern | `09 91 01 07 00 08 00 00` `01 00 00 00 00 00 00 00` | `09 01 01 07 10 78 00 00` |
-| `0x09`  | `0x08`                                       |                        |                                                     |                           |
+| Command | Subcommand                                    | Usage            | Example Request                                     | Example Response          |
+| ---     | ---                                           | ---              | ---                                                 | ---                       |
+| `0x09`  | [`0x01`](#subcommand-0x01---set-player-1-led) | Set player 1 LED | `09 91 00 01 00 00 00 00`                           | `09 01 00 01 10 78 00 00` |
+| `0x09`  | [`0x02`](#subcommand-0x02---set-player-2-led) | Set player 2 LED | `09 91 00 02 00 00 00 00`                           | `09 01 00 02 10 78 00 00` |
+| `0x09`  | [`0x03`](#subcommand-0x03---set-player-3-led) | Set player 3 LED | `09 91 00 03 00 00 00 00`                           | `09 01 00 03 10 78 00 00` |
+| `0x09`  | [`0x04`](#subcommand-0x04---set-player-4-led) | Set player 4 LED | `09 91 00 04 00 00 00 00`                           | `09 01 00 04 10 78 00 00` |
+| `0x09`  | [`0x05`](#subcommand-0x05---set-all-leds-on)  | Set all LEDs on  | `09 91 00 05 00 00 00 00`                           | `09 01 00 05 10 78 00 00` |
+| `0x09`  | [`0x06`](#subcommand-0x06---set-all-leds-off) | Set all LEDs off | `09 91 00 06 00 00 00 00`                           | `09 01 00 06 10 78 00 00` |
+| `0x09`  | [`0x07`](#subcommand-0x07---set-led-pattern)  | Set LED pattern  | `09 91 01 07 00 08 00 00` `01 00 00 00 00 00 00 00` | `09 01 01 07 10 78 00 00` |
+| `0x09`  | [`0x08`](#subcommand-0x08---flash-leds)       | Flash LEDs       | `09 91 01 08 00 04 00 00` `01 00 00 00`             | `09 01 01 08 10 78 00 00` |
 
 
-### Subcommand 0x07 - Set Player LEDs
+### Subcommand 0x01 - Set Player 1 LED
+
+Sets player 1 LED on and disables all others. Equivalent to subcommand `0x07` with argument `0b0001`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x02 - Set Player 2 LED
+
+Sets player 2 LED on and disables all others. Equivalent to subcommand `0x07` with argument `0b0010`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x03 - Set Player 3 LED
+
+Sets player 3 LED on and disables all others. Equivalent to subcommand `0x07` with argument `0b0100`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x04 - Set Player 4 LED
+
+Sets player 4 LED on and disables all others. Equivalent to subcommand `0x07` with argument `0b1000`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x05 - Set All LEDs On
+
+Sets all player LEDs on. Equivalent to subcommand `0x07` with argument `0b1111`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x06 - Set All LEDs Off
+
+Sets all player LEDs off. Equivalent to subcommand `0x07` with argument `0b0000`.
+
+**Request data:**
+
+*None*
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x07 - Set LED Pattern
 
 Set the player LED pattern on the controller.
 
@@ -398,6 +476,23 @@ Set the player LED pattern on the controller.
 **Response data:** 
 
 *None*
+
+
+### Subcommand 0x08 - Flash LEDs
+
+Set the current player LED pattern to flash on and off.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                                      |
+| ---    | ---  | ---     | ---                                          |
+| 0x0    | 0x1  | Enable  | Boolean value to enable/disable LED flashing |
+| 0x1    | 0x7  | Unknown | Seems to be unused                           |
+
+**Response data:** 
+
+*None*
+
 
 ---
 
