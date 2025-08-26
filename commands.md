@@ -457,13 +457,13 @@ Unknown.
 
 These commands are used for configuring which features are enabled in the HID reports sent by the controller.
 
-| Command | Subcommand                                       | Usage               | Example Request                         | Example Response                        |
-| ---     | ---                                              | ---                 | ---                                     | ---                                     |
-| `0x0C`  | `0x01`                                           |                     |                                         |                                         |
-| `0x0C`  | [`0x02`](#subcommand-0x02---initialise-features) | Initialise features | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | `0x03`                                           |                     |                                         |                                         |
-| `0x0C`  | [`0x04`](#subcommand-0x04---enable-features)     | Enable features     | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00` |
-| `0x0C`  | [`0x05`](#subcommand-0x05---disable-features)    | Disable features    | `0c 91 01 05 00 04 00 00` `10 00 00 00` | `0c 01 01 05 10 78 00 00` `00 00 00 00` |
+| Command | Subcommand                                      | Usage               | Example Request                         | Example Response                                                |
+| ---     | ---                                             | ---                 | ---                                     | ---                                                             |
+| `0x0C`  | [`0x01`](#subcommand-0x01---get-feature-info)   | Get feature info    | `0c 91 01 01 00 04 00 00` `2f 00 00 00` | `0c 01 01 01 10 78 00 00` `00 00 00 00 07 07 01 00 00 03 00 00` |
+| `0x0C`  | [`0x02`](#subcommand-0x02---set-feature-mask)   | Set feature mask    | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00`                         |
+| `0x0C`  | [`0x03`](#subcommand-0x03---clear-feature-mask) | Clear feature mask  | `0c 91 01 03 00 04 00 00` `2f 00 00 00` | `0c 01 01 03 10 78 00 00` `00 00 00 00`                         |
+| `0x0C`  | [`0x04`](#subcommand-0x04---enable-features)    | Enable features     | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00`                         |
+| `0x0C`  | [`0x05`](#subcommand-0x05---disable-features)   | Disable features    | `0c 91 01 05 00 04 00 00` `10 00 00 00` | `0c 01 01 05 10 78 00 00` `00 00 00 00`                         |
 
 ##### Feature Flags:
 
@@ -472,16 +472,30 @@ These commands are used for configuring which features are enabled in the HID re
 | 0   | `0x01` | Button state  |                           |
 | 1   | `0x02` | Analog sticks |                           |
 | 2   | `0x04` | IMU           | Linear accelometer + gyro |
-| 3   | `0x08` | Unknown       |                           |
+| 3   | `0x08` | -             | Unused                    |
 | 4   | `0x10` | Mouse data    | JoyCon only               |
 | 5   | `0x20` | Current       | Seems to be JoyCon only   |
-| 6   | `0x40` | Unknown       |                           |
+| 6   | `0x40` | -             | Unused                    |
 | 7   | `0x80` | Magnetometer  |                           |
 
 
-### Subcommand 0x02 - Initialise Features
+### Subcommand 0x01 - Get Feature Info
 
-Configures the initial set of desired features. Feature flags outside of this mask will be ignored by enable/disable commands.  Must be called at least once prior to subcommands [`0x04`](#subcommand-0x04---enable-features) and [`0x05`](#subcommand-0x05---disable-features).
+Returns 8 bytes of unknown data corresponding to the passed feature flags. Each byte position in the output corresponds to the bit index of a feature apart from byte 3, where the output for bit 7 has been moved to fill the gap. Bytes can take on the values `0x00`, `0x01`, `0x03` or `0x07`. The last 2 bytes are unused.
+
+The output mapping can be described by the following python function:
+
+```python
+def encode_output(flags):
+    out = bytearray(8)
+    out[0] = 0x07 if flags & 0x01 else 0x00
+    out[1] = 0x07 if flags & 0x02 else 0x00
+    out[2] = 0x01 if flags & 0x04 else 0x00  # 0x03 for JoyCon
+    out[3] = 0x01 if flags & 0x80 else 0x00  # 0x03 for JoyCon
+    out[4] = 0x01 if flags & 0x10 else 0x00  # 0x03 for JoyCon
+    out[5] = 0x03 if flags & 0x20 else 0x00
+    return out
+```
 
 **Request data:**
 
@@ -489,6 +503,42 @@ Configures the initial set of desired features. Feature flags outside of this ma
 | ---    | ---  | ---     | ---                             |
 | 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
 | 0x1    | 0x3  | Unknown | Seems to be unused              |
+
+**Response data:** 
+
+| Offset | Size | Value        | Comment    |
+| ---    | ---  | ---          | ---        |
+| 0x0    | 0x4  | Unknown      | All `0x00` |
+| 0x4    | 0x8  | Feature info |            |
+
+
+### Subcommand 0x02 - Set Feature Mask
+
+Sets the feature mask. Feature flags outside of this mask will be ignored by enable/disable commands.  Must be called at least once prior to subcommands [`0x04`](#subcommand-0x04---enable-features) and [`0x05`](#subcommand-0x05---disable-features).
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
+| 0x1    | 0x3  | Unknown | Seems to be unused              |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment    |
+| ---    | ---  | ---     | ---        |
+| 0x0    | 0x4  | Unknown | All `0x00` |
+
+
+### Subcommand 0x03 - Clear Feature Mask
+
+Clears the feature mask. All report features are disabled until a new mask is set with subcommand `0x02`.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment            |
+| ---    | ---  | ---     | ---                |
+| 0x0    | 0x4  | Unknown | Seems to be unused |
 
 **Response data:** 
 
