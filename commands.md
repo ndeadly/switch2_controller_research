@@ -84,12 +84,75 @@ Unknown.
 
 ## Command 0x02 - Flash Memory
 
-| Command | Subcommand                                | Usage        | Example Request                                                                                                                                                                                                                                     | Example Response                                                                                    |
-| ---     | ---                                       | ---          | ---                                                                                                                                                                                                                                                 | ---                                                                                                 |
-| `0x02`  | `0x01`                                    |              |                                                                                                                                                                                                                                                     |                                                                                                     |
-| `0x02`  | `0x03`                                    |              |                                                                                                                                                                                                                                                     |                                                                                                     |
-| `0x02`  | [`0x04`](#subcommand-0x04---memory-read)  | Memory read  | `02 91 01 04 00 08 00 00` `10 7e 00 00 40 30 01 00`                                                                                                                                                                                                 | `02 01 01 04 10 78 00 00` `10 00 00 00 40 30 01 00 3b e0 d3 41 c6 60 6a bc 4d d7 a2 bb 71 1e dd 37` |
-| `0x02`  | [`0x05`](#subcommand-0x05---memory-write) | Memory write | `02 91 01 05 00 48 00 00` `40 7e 00 00 00 c0 1f 00 b2 a1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` | `02 01 01 05 10 78 00 00` `00 00 00 00 00 c0 1f 00`                                                 |
+| Command | Subcommand                                       | Usage               | Example Request                                                                                                                                                                                                                                     | Example Response                                                                                                                                                                                                                                    |
+| ---     | ---                                              | ---                 | ---                                                                                                                                                                                                                                                 | ---                                                                                                                                                                                                                                                 |
+| `0x02`  | [`0x01`](#subcommand-0x01---read-memory-block)   | Read memory block   | `02 91 01 01 00 08 00 00` `00 00 00 00 00 50 17 00`                                                                                                                                                                                                 | `02 01 01 01 10 78 00 00` `40 00 00 00 00 50 17 00 44 53 50 48 01 00 00 00 a0 96 02 00 00 02 02 00 00 00 09 10 fd 16 29 8a 06 5f 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` |
+| `0x02`  | [`0x02`](#subcommand-0x02---write-memory-block)  | Write memory block  | `02 91 01 02 00 48 00 00` `00 00 00 00 00 c0 1f 00 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69` | `02 01 01 02 10 78 00 00` `00 00 00 00 00 c0 1f 00`                                                                                                                                                                                                 |
+| `0x02`  | [`0x03`](#subcommand-0x03---erase-memory-sector) | Erase memory sector | `02 91 01 03 00 08 00 00` `00 00 00 00 00 c0 1f 00`                                                                                                                                                                                                 | `02 01 01 03 00 78 00 00` `00 00 00 00`                                                                                                                                                                                                             |
+| `0x02`  | [`0x04`](#subcommand-0x04---memory-read)         | Memory read         | `02 91 01 04 00 08 00 00` `10 7e 00 00 40 30 01 00`                                                                                                                                                                                                 | `02 01 01 04 10 78 00 00` `10 00 00 00 40 30 01 00 3b e0 d3 41 c6 60 6a bc 4d d7 a2 bb 71 1e dd 37`                                                                                                                                                 |
+| `0x02`  | [`0x05`](#subcommand-0x05---memory-write)        | Memory write        | `02 91 01 05 00 48 00 00` `40 7e 00 00 00 c0 1f 00 b2 a1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` | `02 01 01 05 10 78 00 00` `00 00 00 00 00 c0 1f 00`                                                                                                                                                                                                 |
+| `0x02`  | `0x06`                                           | Unknown             |                                                                                                                                                                                                                                                     |                                                                                                                                                                                                                                                     |
+
+
+### Subcommand 0x01 - Read Memory Block
+
+Reads a `0x40` byte block of internal flash [memory](memory_layout.md#memory-layout).
+
+**Request data:**
+
+| Offset | Size | Value        | Comment                              |
+| ---    | ---  | ---          | ---                                  |
+| 0x0    | 0x4  | Unknown      | All `0x00`                           |
+| 0x4    | 0x4  | Read address | Address to read from (Little-Endian) |
+
+**Response data:** 
+
+| Offset | Size | Value        | Comment                                  |
+| ---    | ---  | ---          | ---                                      |
+| 0x0    | 0x1  | Read length  | Number of bytes read. Always `0x40`      |
+| 0x1    | 0x3  | Unknown      | All `0x00`. Probably padding             |
+| 0x4    | 0x4  | Read address | Where data was read from (Little-Endian) |
+| 0x8    | 0x40 | Data         | Data read from the given address         |
+
+
+### Subcommand 0x02 - Write Memory Block
+
+Writes a `0x40` byte block of data to internal flash [memory](memory_layout.md#memory-layout).
+
+**Request data:**
+
+| Offset | Size | Value        | Comment                             |
+| ---    | ---  | ---          | ---                                 |
+| 0x0    | 0x4  | Unknown      | All `0x00`                          |
+| 0x4    | 0x4  | Read address | Address to write to (Little-Endian) |
+| 0x8    | 0x40 | Data         | Data to write                       |
+
+**Response data:** 
+
+| Offset | Size | Value        | Comment                                  |
+| ---    | ---  | ---          | ---                                      |
+| 0x0    | 0x1  | Read length  | Number of bytes read. Always `0x40`      |
+| 0x1    | 0x3  | Unknown      | All `0x00`. Probably padding             |
+| 0x4    | 0x4  | Read address | Where data was read from (Little-Endian) |
+| 0x8    | 0x40 | Data         | Data read from the given address         |
+
+
+### Subcommand 0x03 - Erase Memory Sector
+
+Erases a `0x1000` byte memory sector, setting all bytes to `0xFF`.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                                            |
+| ---    | ---  | ---     | ---                                                |
+| 0x0    | 0x4  | Unknown | All `0x00`                                         |
+| 0x4    | 0x4  | Address | Address within the sector to erase (Little-Endian) |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment    |
+| ---    | ---  | ---     | ---        |
+| 0x0    | 0x4  | Unknown | All `0x00` |
 
 
 ### Subcommand 0x04 - Memory Read
@@ -107,12 +170,12 @@ Read from internal flash [memory](memory_layout.md#memory-layout). Maximum read 
 
 **Response data:** 
 
-| Offset | Size | Value        | Comment                                  |
-| ---    | ---  | ---          | ---                                      |
-| 0x0    | 0x1  | Read length  | Number of bytes read                     |
-| 0x1    | 0x3  | Unknown      | All `0x00`. Probably padding             |
-| 0x4    | 0x4  | Read address | Where data was read from (Little-Endian) |
-
+| Offset | Size   | Value        | Comment                                  |
+| ---    | ---    | ---          | ---                                      |
+| 0x0    | 0x1    | Read length  | Number of bytes read                     |
+| 0x1    | 0x3    | Unknown      | All `0x00`. Probably padding             |
+| 0x4    | 0x4    | Read address | Where data was read from (Little-Endian) |
+| 0x8    | 0-0x50 | Data         | Data read from the given address         |
 
 ### Subcommand 0x05 - Memory Write
 
