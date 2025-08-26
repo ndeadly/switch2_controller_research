@@ -766,7 +766,13 @@ Unknown.
 
 ## Command 0x13 - Unknown
 
-*Seems to be unused*
+Unknown. Seems to only be used on JoyCon controllers.
+
+| Command | Subcommand | Usage   | Example Request           | Example Response                                    |
+| ---     | ---        | ---     | ---                       | ---                                                 |
+| `0x13`  | `0x01`     | Unknown | `13 91 01 01 00 00 00 00` | `13 01 01 01 10 78 00 00` `01 00 00 00`             |
+| `0x13`  | `0x02`     | Unknown | `13 91 01 02 00 00 00 00` | `13 01 01 02 10 78 00 00` `01 00 00 00 00 00 00 00` |
+| `0x13`  | `0x03`     | Unknown | `13 91 01 03 00 00 00 00` | `13 01 01 03 10 78 00 00` `01 00 00 00 00 00 00 00` |
 
 ---
 
