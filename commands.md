@@ -366,13 +366,14 @@ Unknown. This is the first command sent during initialisation.
 
 ## Command 0x08 - Charging Grip
 
-| Command | Subcommand                                                | Usage                        | Example Request                         | Example Response                                                                                                                        |
-| ---     | ---                                                       | ---                          | ---                                     | ---                                                                                                                                     |
-| `0x08`  | [`0x01`](#subcommand-0x01---get-charging-grip-info)       | Get charging grip info       | `08 91 00 01 00 04 00 00` `20 00 00 00` | `08 01 00 01 00 f8 00 00` `00 00 00 00 01 00 48 44 4c 35 30 30 30 33 34 38 35 35 31 39 00 00 7e 05 68 20 01 03 01 ff ff ff ff ff ff ff` |
-| `0x08`  | [`0x02`](#subcommand-0x02---enable-charging-grip-buttons) | Enable charging grip buttons | `08 91 00 02 00 04 00 00` `01 00 00 00` | `08 01 00 02 00 f8 00 00`                                                                                                               |
+| Command | Subcommand                                                     | Usage                               | Example Request                         | Example Response                                                                                                                                                                                                                        |
+| ---     | ---                                                            | ---                                 | ---                                     | ---                                                                                                                                                                                                                                     |
+| `0x08`  | [`0x01`](#subcommand-0x01---get-charging-grip-info-0x20-bytes) | Get charging grip info (0x20 bytes) | `08 91 00 01 00 04 00 00` `20 00 00 00` | `08 01 00 01 00 f8 00 00` `00 00 00 00 01 00 48 44 4c 35 30 30 30 33 34 38 35 35 31 39 00 00 7e 05 68 20 01 03 01 ff ff ff ff ff ff ff`                                                                                                 |
+| `0x08`  | [`0x02`](#subcommand-0x02---enable-charging-grip-buttons)      | Enable charging grip buttons        | `08 91 00 02 00 04 00 00` `01 00 00 00` | `08 01 00 02 00 f8 00 00`                                                                                                                                                                                                               |
+| `0x08`  | [`0x03`](#subcommand-0x03---get-charging-grip-info-0x40-bytes) | Get charging grip info (0x40 bytes) | `08 91 00 03 00 04 00 00` `40 00 00 00` | `08 01 00 03 00 f8 00 00` `00 00 00 00 01 00 48 44 4c 35 30 30 30 33 34 38 35 35 31 39 00 00 7e 05 68 20 01 03 01 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff` |
 
 
-### Subcommand 0x01 - Get Charging Grip Info
+### Subcommand 0x01 - Get Charging Grip Info (0x20 Bytes)
 
 Reads up to 0x20 bytes of data from the charging grip. Data is similar to the factory data found at offset [`0x13000`](memory_layout.md#0x13000-0x14fff) in controller memory. Response always contains 0x20 bytes, unused bytes are initialised to 0.
 
@@ -405,6 +406,25 @@ Enables the GL/GR buttons on the charging grip.
 **Response data:**
 
 *None*
+
+
+### Subcommand 0x03 - Get Charging Grip Info (0x40 Bytes)
+
+Same as subcommand [0x01](#subcommand-0x01---get-charging-grip-info-0x20-bytes), only returns 0x40 bytes instead of 0x20.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                 |
+| ---    | ---  | ---     | ---                     |
+| 0x0    | 0x1  | Size    | Number of bytes to read |
+| 0x1    | 0x3  | Unknown | Seems to be unused      |
+
+**Response data:**
+
+| Offset | Size | Value   | Comment                |
+| ---    | ---  | ---     | ---                    |
+| 0x0    | 0x4  | Unknown | Always 0. Maybe offset |
+| 0x4    | 0x40 | Data    | Charging grip data     |
 
 ---
 
