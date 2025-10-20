@@ -32,7 +32,7 @@ Most commands listed below with example data have been observed in use by the co
 | [0x05](#command-0x05---unknown)           | Unknown           |
 | [0x06](#command-0x06---unknown)           | Unknown           |
 | [0x07](#command-0x07---unknown)           | Unknown           |
-| [0x08](#command-0x08---unknown)           | Unknown           |
+| [0x08](#command-0x08---charging-grip)     | Charging Grip     |
 | [0x09](#command-0x09---player-leds)       | Player LEDs       |
 | [0x0A](#command-0x0a---vibration)         | Vibration         |
 | [0x0B](#command-0x0b---battery)           | Battery           |
@@ -364,9 +364,47 @@ Unknown. This is the first command sent during initialisation.
 
 ---
 
-## Command 0x08 - Unknown
+## Command 0x08 - Charging Grip
 
-*Possibly unused*
+| Command | Subcommand                                                | Usage                        | Example Request                         | Example Response                                                                                                                        |
+| ---     | ---                                                       | ---                          | ---                                     | ---                                                                                                                                     |
+| `0x08`  | [`0x01`](#subcommand-0x01---get-charging-grip-info)       | Get charging grip info       | `08 91 00 01 00 04 00 00` `20 00 00 00` | `08 01 00 01 00 f8 00 00` `00 00 00 00 01 00 48 44 4c 35 30 30 30 33 34 38 35 35 31 39 00 00 7e 05 68 20 01 03 01 ff ff ff ff ff ff ff` |
+| `0x08`  | [`0x02`](#subcommand-0x02---enable-charging-grip-buttons) | Enable charging grip buttons | `08 91 00 02 00 04 00 00` `01 00 00 00` | `08 01 00 02 00 f8 00 00`                                                                                                               |
+
+
+### Subcommand 0x01 - Get Charging Grip Info
+
+Reads up to 0x20 bytes of data from the charging grip. Data is similar to the factory data found at offset [`0x13000`](memory_layout.md#0x13000-0x14fff) in controller memory. Response always contains 0x20 bytes, unused bytes are initialised to 0.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                 |
+| ---    | ---  | ---     | ---                     |
+| 0x0    | 0x1  | Size    | Number of bytes to read |
+| 0x1    | 0x3  | Unknown | Seems to be unused      |
+
+**Response data:**
+
+| Offset | Size | Value   | Comment                |
+| ---    | ---  | ---     | ---                    |
+| 0x0    | 0x4  | Unknown | Always 0. Maybe offset |
+| 0x4    | 0x20 | Data    | Charging grip data     |
+
+
+### Subcommand 0x02 - Enable Charging Grip Buttons
+
+Enables the GL/GR buttons on the charging grip.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                                      |
+| ---    | ---  | ---     | ---                                          |
+| 0x0    | 0x1  | Enable  | Boolean value to enable/disable grip buttons |
+| 0x1    | 0x3  | Unknown | Seems to be unused                           |
+
+**Response data:**
+
+*None*
 
 ---
 
