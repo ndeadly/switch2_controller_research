@@ -40,7 +40,7 @@ Most commands listed below with example data have been observed in use by the co
 | [0x0D](#command-0x0d---firmware-update)   | Firmware Update   |
 | [0x0E](#command-0x0e---unknown)           | Unknown           |
 | [0x0F](#command-0x0f---unknown)           | Unknown           |
-| [0x10](#command-0x10---unknown)           | Unknown           |
+| [0x10](#command-0x10---firmware-info)     | Firmware Info     |
 | [0x11](#command-0x11---unknown)           | Unknown           |
 | [0x12](#command-0x12---unknown)           | Unknown           |
 | [0x13](#command-0x13---unknown)           | Unknown           |
@@ -943,14 +943,16 @@ Unknown.
 
 ---
 
-## Command 0x10 - Unknown
+## Command 0x10 - Firmware Info
 
-| Command | Subcommand | Usage   | Example Request           | Example Response                                                |
-| ---     | ---        | ---     | ---                       | ---                                                             |
-| `0x10`  | `0x01`     | Unknown | `10 91 01 01 00 00 00 00` | `10 01 01 01 10 78 00 00` `01 00 0e 01 0c 00 00 00 ff ff ff ff` |
+| Command | Subcommand                                             | Usage                     | Example Request           | Example Response                                                |
+| ---     | ---                                                    | ---                       | ---                       | ---                                                             |
+| `0x10`  | [`0x01`](#subcommand-0x01---get-firmware-version-info) | Get firmware version info | `10 91 01 01 00 00 00 00` | `10 01 01 01 10 78 00 00` `01 00 0e 01 0c 00 00 00 ff ff ff ff` |
 
 
-### Subcommand 0x01 - Unknown
+### Subcommand 0x01 - Get Firmware Version Info
+
+Gets version information about the controller firmware.
 
 **Request data:**
 
@@ -958,9 +960,14 @@ Unknown.
 
 **Response data:** 
 
-| Offset | Size | Value   | Comment |
-| ---    | ---  | ---     | ---     |
-| 0x0    | 0xC  | Unknown |         |
+| Offset | Size | Value                     | Comment                                                                       |
+| ---    | ---  | ---                       | ---                                                                           |
+| 0x0    | 0x1  | Controller firmware major | Controller firmware major version number                                      |
+| 0x1    | 0x1  | Controller firmware minor | Controller firmware minor version number                                      |
+| 0x2    | 0x1  | Controller firmware micro | Controller firmware micro version number                                      |
+| 0x3    | 0x1  | Controller firmware type  | `00` = JoyCon (L), `01` = JoyCon (R), `02` = Pro Controller, `03` = Gamecube  |
+| 0x4    | 0x4  | Unknown                   | Always `0c 00 00 00`                                                          |
+| 0x8    | 0x4  | DSP firmware version      | Only present on Pro Controller with updated firmware, `ff ff ff ff` otherwise |
 
 ---
 
