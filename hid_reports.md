@@ -222,16 +222,35 @@ Only available on NSO Gamecube controllers. Sent via GATT handle 0x000E (UUID=`8
 
 ## Output Report 0x01
 
-Only available on JoyCon 2.
+Only available on JoyCon 2. Sent via GATT handle 0x0012 (UUID=`289326cb-a471-485d-a8f4-240c14f18241`/`fa19b0fb-cd1f-46a7-84a1-bbb09e00c149`).
+
+| Offset | Size | Value          | Comment                               |
+| ---    | ---  | ---            | ---                                   |
+| 0x0    | 0x1  | Report ID      | Always `00` for Bluetooth connections |
+| 0x1    | 0x10 | HD Rumble Data | Packed rumble data for LRA            |
+| 0x11   | 0x19 | Reserved       | Unused                                |
 
 ---
 
 ## Output Report 0x02
 
-Only available on Pro Controller 2.
+Only available on Pro Controller 2. Sent via GATT handle 0x0012 (UUID=`cc483f51-9258-427d-a939-630c31f72b05`).
+
+| Offset | Size | Value                | Comment                               |
+| ---    | ---  | ---                  | ---                                   |
+| 0x0    | 0x1  | Report ID            | Always `00` for Bluetooth connections |
+| 0x1    | 0x10 | HD Rumble Data Left  | Packed rumble data for left LRA       |
+| 0x11   | 0x10 | HD Rumble Data Right | Packed rumble data for right LRA      |
+| 0x21   | 0x9  | Reserved             | Unused                                |
 
 ---
 
 ## Output Report 0x03
 
-Only available on NSO Gamecube controllers.
+Only available on NSO Gamecube controllers. Sent via GATT handle 0x0012 (UUID=`3f8fb670-ab25-45bf-b540-38c72834d064`).
+
+| Offset | Size | Value                | Comment                               |
+| ---    | ---  | ---                  | ---                                   |
+| 0x0    | 0x1  | Report ID            | Always `00` for Bluetooth connections |
+| 0x1    | 0x4  | Gamecube Rumble Data | Packed rumble data for Gamecube motor |
+| 0x5    | 0x25 | Reserved             | Unused                                |
