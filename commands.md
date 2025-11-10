@@ -802,6 +802,11 @@ Disables the selected features.
 
 ## Command 0x0D - Firmware Update
 
+Commands for issuing controller firmware updates. Used for transferring a firmware update image to one of the two failsafe firmware update memory banks at [`0x15000`](memory_layout.md#0x15000-0x74fff) and [`0x75000`](memory_layout.md#0x75000-0xd4fff)
+
+> [!CAUTION]
+> These commands are potentially dangerous and can result in a bricked controller if used incorrectly. On early controller firmware simply issuing the "Set Failsafe Address" command with a bad address is enough to brick. Joycon firmware 1.0.22 appears to implement additional validation/safeguards to make this more difficult, but caution is still advised.
+
 | Command | Subcommand                                              | Usage                       | Example Request                                                                                                                                                                                                                                                                                                                         | Example Response          |
 | ---     | ---                                                     | ---                         | ---                                                                                                                                                                                                                                                                                                                                     | ---                       |
 | `0x0D`  | [`0x01`](#subcommand-0x01---initialise-firmware-update) | Initialise firmware update? | `0d 91 01 01 00 00 00 00`                                                                                                                                                                                                                                                                                                               | `0d 01 01 01 10 78 00 00` |
