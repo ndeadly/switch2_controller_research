@@ -10,8 +10,8 @@ The 2MB memory is divided into the following sections. All uninitialised/unused 
 | Section                                 | Size    | Usage                      |
 | ---                                     | ---     | ---                        |
 | [0x0-0x10FFF](#0x0-0x10FFF)             | 0x11000 | Initial FW                 |
-| [0x11000-0x11FFF](#0x11000-0x11FFF)     | 0x1000  | Unknown                    |
-| [0x12000-0x12FFF](#0x12000-0x12FFF)     | 0x1000  | Unknown                    |
+| [0x11000-0x11FFF](#0x11000-0x11FFF)     | 0x1000  | Failsafe FW update address |
+| [0x12000-0x12FFF](#0x12000-0x12FFF)     | 0x1000  | Failsafe FW update magic   |
 | [0x13000-0x14FFF](#0x13000-0x14FFF)     | 0x2000  | Factory data               |
 | [0x15000-0x74FFF](#0x15000-0x74FFF)     | 0x60000 | Failsafe FW update bank #1 |
 | [0x75000-0xD4FFF](#0x75000-0xD4FFF)     | 0x60000 | Failsafe FW update bank #2 |
@@ -30,17 +30,18 @@ Contains the initial firmware/firmware patches. Appears to be encrypted. Header 
 
 Structure of the header is as follows:
 
-| Offset | Size   | Example                                                                                           | Usage                                                         |
-| ---    | ---    | ---                                                                                               | ---                                                           |
-| 0x0    | 0x4    | `01 00 64 AA`                                                                                     | Header magic 0xAA640001                                       |
-| 0x4    | 0x4    | `20 53 59 53`                                                                                     | ASCII name "SYS "                                             |
-| 0x8    | 0x4    | `C6 38 8F E7`                                                                                     | Unknown (CRC? Flags?)                                         |
-| 0xC    | 0x4    | `00 00 77 10`                                                                                     | Size of data including header (u32 BE)                        |
-| 0x10   | 0x20   | `83 FF EC 07 46 EC F4 D9 17 2A E5 AE 0B 5D 6B CF 12 4A D5 4C 4D 83 B0 71 BD E7 01 F2 CC B5 8B 45` | Unknown. Unchanged between firmwares. Maybe IV and tag values |
+| Offset | Size        | Example                                                                                           | Usage                                                         |
+| ---    | ---         | ---                                                                                               | ---                                                           |
+| 0x0    | 0x4         | `01 00 64 AA`                                                                                     | Header magic 0xAA640001                                       |
+| 0x4    | 0x4         | `20 53 59 53`                                                                                     | ASCII name "SYS "                                             |
+| 0x8    | 0x4         | `C6 38 8F E7`                                                                                     | Unknown (CRC? Flags?)                                         |
+| 0xC    | 0x4         | `00 00 77 10`                                                                                     | Size of data including header (u32 BE)                        |
+| 0x10   | 0x20        | `83 FF EC 07 46 EC F4 D9 17 2A E5 AE 0B 5D 6B CF 12 4A D5 4C 4D 83 B0 71 BD E7 01 F2 CC B5 8B 45` | Unknown. Unchanged between firmwares. Maybe IV and tag values |
+| 0x30   | 0x0-0x5FFD0 | -                                                                                                 | Firmware update body                                          |
 
 ## 0x11000-0x11FFF
 
-Uninitialised on original factory firmware. After update first 4 bytes are initialised to the address where the firmware update is to be loaded from.
+Uninitialised on original factory firmware. When magic at [`0x12000`](#0x12000-0x12fff) is set, firmware update is loaded from the address found in the first 4 bytes. Subsequent updates alternate between setting and clearing these values to switch between failsafe firmware update banks [#1](#0x15000-0x74fff) and [#2](#0x75000-0xd4fff).
 
 | Offset  | Size | Example       | Usage                                              |
 | ---     | ---  | ---           | ---                                                |
@@ -48,11 +49,11 @@ Uninitialised on original factory firmware. After update first 4 bytes are initi
 
 ## 0x12000-0x12FFF
 
-Uninitialised on original factory firmware. After update first 2 bytes are initialised to `EF BE` (0xBEEF)
+When first two bytes contain magic number `0xBEEF` firmware update is loaded from address at [`0x11000`](#0x11000-0x11fff), otherwise defaults to primary update bank at `0x15000`.
 
-| Offset  | Size | Example | Usage            |
-| ---     | ---  | ---     | ---              |
-| 0x12000 | 0x2  | `EF BE` | Unknown (u16 LE) |
+| Offset  | Size | Example | Usage                   |
+| ---     | ---  | ---     | ---                     |
+| 0x12000 | 0x2  | `EF BE` | Failsafe magic (u16 LE) |
 
 ## 0x13000-0x14FFF
 
