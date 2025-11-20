@@ -731,16 +731,16 @@ These commands are used for configuring which features are enabled in the HID re
 
 ##### Feature Flags:
 
-| Bit | Mask   | Feature       | Comment                   |
-| --- | ---    | ---           | ---                       |
-| 0   | `0x01` | Button state  |                           |
-| 1   | `0x02` | Analog sticks |                           |
-| 2   | `0x04` | IMU           | Linear accelometer + gyro |
-| 3   | `0x08` | -             | Unused                    |
-| 4   | `0x10` | Mouse data    | JoyCon only               |
-| 5   | `0x20` | Current       | Seems to be JoyCon only   |
-| 6   | `0x40` | -             | Unused                    |
-| 7   | `0x80` | Magnetometer  |                           |
+| Bit | Mask   | Feature       | Comment                                                                                                                                          |
+| --- | ---    | ---           | ---                                                                                                                                              |
+| 0   | `0x01` | Button state  |                                                                                                                                                  |
+| 1   | `0x02` | Analog sticks |                                                                                                                                                  |
+| 2   | `0x04` | IMU           | Linear accelometer + gyro                                                                                                                        |
+| 3   | `0x08` | -             | Unused                                                                                                                                           |
+| 4   | `0x10` | Mouse data    | JoyCon only                                                                                                                                      |
+| 5   | `0x20` | Rumble        | Toggling off doesn't affect Bluetooth connections. Also reports battery current for JoyCons on report [`0x05`](hid_reports.md#input-report-0x05) |
+| 6   | `0x40` | -             | Unused                                                                                                                                           |
+| 7   | `0x80` | Magnetometer  |                                                                                                                                                  |
 
 
 ### Subcommand 0x01 - Get Feature Info
