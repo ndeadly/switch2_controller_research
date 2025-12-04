@@ -106,7 +106,7 @@ Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID=`cc1bbbb5-7354
 | 0x4    | 0x1  | Unknown                            | Always 0x07?                                                 |
 | 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                          |
 | 0x8    | 0x1  | Unknown                            | -                                                            |
-| 0x9    | 0x7  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                 |
+| 0x9    | 0x5  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                 |
 | 0xE    | 0x1  | Unknown                            | Always 0                                                     |
 | 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40} |
 | 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format           |
@@ -141,7 +141,7 @@ Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID=`d5a9e01e-2ffc
 | 0x4    | 0x1  | Unknown                            | Always 0x07?                                                 |
 | 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                          |
 | 0x8    | 0x1  | Unknown                            | -                                                            |
-| 0x9    | 0x7  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                 |
+| 0x9    | 0x5  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                 |
 | 0xE    | 0x1  | Unknown                            | Always 0                                                     |
 | 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40} |
 | 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format           |
