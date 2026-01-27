@@ -54,17 +54,18 @@ Most commands listed below with example data have been observed in use by the co
 
 ## Command 0x01 - NFC
 
-| Command | Subcommand | Usage   | Example Request                   | Example Response                                                                                                                                                                                                                                       |
-| ---     | ---        | ---     | ---                               | ---                                                                                                                                                                                                                                                    |
-| `0x01`  | `0x01`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x02`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x03`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x04`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x05`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x06`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x0C`     | Unknown | `01 91 01 0c 00 00 00 00`         | `01 01 01 0c 10 78 00 00` `61 12 50 0d`                                                                                                                                                                                                                |
-| `0x01`  | `0x14`     | Unknown |                                   |                                                                                                                                                                                                                                                        |
-| `0x01`  | `0x15`     | Unknown | `01 91 01 15 00 02 00 00` `46 00` | `01 01 01 15 10 78 00 00` `00 46 00 0f e0 f1 10 ff ee a5 00 08 00 fd f5 48 f9 8a ad 85 b9 42 38 ba 22 09 d0 c0 30 bb 70 eb 13 87 70 f7 ae eb d1 3c 31 ae f6 a0 30 85 01 69 b9 05 96 d5 e3 14 9f 46 45 e0 c2 ef 88 25 23 56 95 e2 8c 30 a9 df b5 39 c2` |
+| Command | Subcommand | Usage        | Example Request                                                                                                                                                                                                                                                             | Example Response                                                                                                                                                                                                                                       |
+| ---     | ---        | ---          | ---                                                                                                                                                                                                                                                                         | ---                                                                                                                                                                                                                                                    |
+| `0x01`  | `0x01`     | Unknown      |                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                        |
+| `0x01`  | `0x02`     | Unknown      |                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                        |
+| `0x01`  | `0x03`     | Unknown      | `01 91 00 03 00 05 00 00` `00 e8 03 2c 01`                                                                                                                                                                                                                                  | `01 01 00 03 00 f8 00 00`                                                                                                                                                                                                                              |
+| `0x01`  | `0x04`     | Unknown      | `01 91 00 04 00 00 00 00`                                                                                                                                                                                                                                                   | `01 01 00 04 00 f8 00 00`                                                                                                                                                                                                                              |
+| `0x01`  | `0x05`     | Get status   | `01 91 00 05 00 00 00 00`                                                                                                                                                                                                                                                   | `01 01 00 05 00 f8 00 00` `09 00 00 00 01 01 02 00 07 04 8a 6d 2a b7 5d 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00`                                     |
+| `0x01`  | `0x06`     | Read device  | `01 91 00 06 00 13 00 00` `d0 07 00 00 00 00 00 00 00 01 03 00 3b 3c 77 78 86 00 00`                                                                                                                                                                                        | `01 01 00 06 00 f8 00 00`                                                                                                                                                                                                                              |
+| `0x01`  | `0x08`     | Write device | `01 91 00 08 00 00 00 00`                                                                                                                                                                                                                                                   | `01 01 00 08 00 f8 00 00`                                                                                                                                                                                                                              |
+| `0x01`  | `0x0C`     | Unknown      | `01 91 01 0c 00 00 00 00`                                                                                                                                                                                                                                                   | `01 01 01 0c 10 78 00 00` `61 12 50 0d`                                                                                                                                                                                                                |
+| `0x01`  | `0x14`     | Write buffer | `01 91 00 14 00 50 00 00` `00 00 4c 00 d0 07 04 8a 6d 2a b7 5d 80 01 00 01 04 ff ff ff ff a5 f9 a5 00 03 05 20 6a 67 ab 1e d9 3f ce 3b 52 66 7b 31 35 f8 51 bb bc 38 cf 9c 66 bc ac 2c 07 2b 3f e3 a9 ac 68 a6 20 f0 d8 ef 6b ba 6c 4d 82 53 b6 7f 25 16 0c 97 08 9b ed 30` | `01 01 00 14 00 f8 00 00`                                                                                                                                                                                                                              |
+| `0x01`  | `0x15`     | Read buffer  | `01 91 01 15 00 02 00 00` `46 00`                                                                                                                                                                                                                                           | `01 01 01 15 10 78 00 00` `00 46 00 0f e0 f1 10 ff ee a5 00 08 00 fd f5 48 f9 8a ad 85 b9 42 38 ba 22 09 d0 c0 30 bb 70 eb 13 87 70 f7 ae eb d1 3c 31 ae f6 a0 30 85 01 69 b9 05 96 d5 e3 14 9f 46 45 e0 c2 ef 88 25 23 56 95 e2 8c 30 a9 df b5 39 c2` |
 
 
 ### Subcommand 0x0C - Unknown
@@ -363,12 +364,28 @@ Initialise the controller for USB. Required before the controller will send inpu
 
 ## Command 0x06 - Unknown
 
-| Command | Subcommand                                     | Usage              | Example Request                         | Example Response          |
-| ---     | ---                                            | ---                | ---                                     | ---                       |
-| `0x06`  | `0x01`                                         | Unknown            |                                         |                           |
-| `0x06`  | `0x02`                                         | Unknown            |                                         |                           |
-| `0x06`  | [`0x03`](#subcommand-0x03---reboot-controller) | Reboot controller? | `06 91 01 03 00 04 00 00` `01 00 00 00` | `06 01 01 03 10 78 00 00` |
+| Command | Subcommand                                       | Usage                | Example Request                                                 | Example Response          |
+| ---     | ---                                              | ---                  | ---                                                             | ---                       |
+| `0x06`  | `0x01`                                           | Unknown              |                                                                 |                           |
+| `0x06`  | [`0x02`](#subcommand-0x02---shutdown-controller) | Shutdown controller? | `06 91 00 02 00 0C 00 00` `00 00 00 00 00 00 00 00 00 00 00 00` | `                       ` |
+| `0x06`  | [`0x03`](#subcommand-0x03---reboot-controller)   | Reboot controller?   | `06 91 01 03 00 04 00 00` `01 00 00 00`                         | `06 01 01 03 10 78 00 00` |
 
+
+### Subcommand 0x02 - Shutdown Controller?
+
+This command is called on USB controllers when the console is put to sleep in docked mode.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment  |
+| ---    | ---  | ---     | ---      |
+| 0x0    | 0xC  | Unknown | All `00` |
+
+**Response data:** 
+
+*None*
+
+---
 
 ### Subcommand 0x03 - Reboot Controller?
 
@@ -666,7 +683,7 @@ Sends raw vibration data/commands to the controller.
 | `0x0B`  | [`0x03`](#subcommand-0x03---get-battery-voltage) | Get battery voltage | `0b 91 00 03 00 00 00 00` | `0b 01 00 03 10 78 00 00` `a5 0e 00 00` |
 | `0x0B`  | [`0x04`](#subcommand-0x04---get-charge-status)   | Get charge status   | `0b 91 00 04 00 00 00 00` | `0b 01 00 04 10 78 00 00` `34 00 83 00` |
 | `0x0B`  | `0x06`                                           | Unknown             | `0b 91 00 06 00 00 00 00` | `0b 01 00 06 10 78 00 00` `11 00 00 00` |
-| `0x0B`  | `0x07`                                           | Unknown             |                           |                                         |
+| `0x0B`  | `0x07`                                           | Unknown             | `0b 91 00 07 00 00 00 00` |                                         |
 
 
 ### Subcommand 0x03 - Get Battery Voltage
@@ -721,13 +738,14 @@ Unknown.
 
 These commands are used for configuring which features are enabled in the HID reports sent by the controller.
 
-| Command | Subcommand                                      | Usage               | Example Request                         | Example Response                                                |
-| ---     | ---                                             | ---                 | ---                                     | ---                                                             |
-| `0x0C`  | [`0x01`](#subcommand-0x01---get-feature-info)   | Get feature info    | `0c 91 01 01 00 04 00 00` `2f 00 00 00` | `0c 01 01 01 10 78 00 00` `00 00 00 00 07 07 01 00 00 03 00 00` |
-| `0x0C`  | [`0x02`](#subcommand-0x02---set-feature-mask)   | Set feature mask    | `0c 91 01 02 00 04 00 00` `2f 00 00 00` | `0c 01 01 02 10 78 00 00` `00 00 00 00`                         |
-| `0x0C`  | [`0x03`](#subcommand-0x03---clear-feature-mask) | Clear feature mask  | `0c 91 01 03 00 04 00 00` `2f 00 00 00` | `0c 01 01 03 10 78 00 00` `00 00 00 00`                         |
-| `0x0C`  | [`0x04`](#subcommand-0x04---enable-features)    | Enable features     | `0c 91 01 04 00 04 00 00` `2f 00 00 00` | `0c 01 01 04 10 78 00 00` `00 00 00 00`                         |
-| `0x0C`  | [`0x05`](#subcommand-0x05---disable-features)   | Disable features    | `0c 91 01 05 00 04 00 00` `10 00 00 00` | `0c 01 01 05 10 78 00 00` `00 00 00 00`                         |
+| Command | Subcommand                                      | Usage              | Example Request                                           | Example Response                                                                                                                                    |
+| ---     | ---                                             | ---                | ---                                                       | ---                                                                                                                                                 |
+| `0x0C`  | [`0x01`](#subcommand-0x01---get-feature-info)   | Get feature info   | `0c 91 01 01 00 04 00 00` `2f 00 00 00`                   | `0c 01 01 01 10 78 00 00` `00 00 00 00 07 07 01 00 00 03 00 00`                                                                                     |
+| `0x0C`  | [`0x02`](#subcommand-0x02---set-feature-mask)   | Set feature mask   | `0c 91 01 02 00 04 00 00` `2f 00 00 00`                   | `0c 01 01 02 10 78 00 00` `00 00 00 00`                                                                                                             |
+| `0x0C`  | [`0x03`](#subcommand-0x03---clear-feature-mask) | Clear feature mask | `0c 91 01 03 00 04 00 00` `2f 00 00 00`                   | `0c 01 01 03 10 78 00 00` `00 00 00 00`                                                                                                             |
+| `0x0C`  | [`0x04`](#subcommand-0x04---enable-features)    | Enable features    | `0c 91 01 04 00 04 00 00` `2f 00 00 00`                   | `0c 01 01 04 10 78 00 00` `00 00 00 00`                                                                                                             |
+| `0x0C`  | [`0x05`](#subcommand-0x05---disable-features)   | Disable features   | `0c 91 01 05 00 04 00 00` `10 00 00 00`                   | `0c 01 01 05 10 78 00 00` `00 00 00 00`                                                                                                             |
+| `0x0C`  | [`0x06`](#subcommand-0x06---configure-features) | Configure features | `0c 91 01 06 00 0A 00 00` `04 00 00 00 02 02 01 00 8A 00` | `0c 01 01 06 10 78 00 00` `00 00 00 00 02 00 00 00 00 50 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00` |
 
 ##### Feature Flags:
 
@@ -845,6 +863,26 @@ Disables the selected features.
 | Offset | Size | Value   | Comment    |
 | ---    | ---  | ---     | ---        |
 | 0x0    | 0x4  | Unknown | All `0x00` |
+
+
+### Subcommand 0x06 - Configure Features
+
+Configures the selected features.
+
+**Request data:**
+
+| Offset | Size | Value   | Comment                         |
+| ---    | ---  | ---     | ---                             |
+| 0x0    | 0x1  | Flags   | [Feature flags](#feature-flags) |
+| 0x1    | 0x3  | Unknown | Seems to be unused              |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment                      |
+| ---    | ---  | ---     | ---                          |
+| 0x0    | 0x4  | Unknown | All `0x00`                   |
+| 0x4    | 0x4  | Length  | Length of the following data |
+| 0x8    | 0x20 | Data    |                              |
 
 ---
 
@@ -1013,14 +1051,14 @@ Gets version information about the controller firmware.
 
 **Response data:** 
 
-| Offset | Size | Value                     | Comment                                                                       |
-| ---    | ---  | ---                       | ---                                                                           |
-| 0x0    | 0x1  | Controller firmware major | Controller firmware major version number                                      |
-| 0x1    | 0x1  | Controller firmware minor | Controller firmware minor version number                                      |
-| 0x2    | 0x1  | Controller firmware micro | Controller firmware micro version number                                      |
-| 0x3    | 0x1  | Controller firmware type  | `00` = JoyCon (L), `01` = JoyCon (R), `02` = Pro Controller, `03` = Gamecube  |
-| 0x4    | 0x4  | Unknown                   | Always `0c 00 00 00`                                                          |
-| 0x8    | 0x4  | DSP firmware version      | Only present on Pro Controller with updated firmware, `ff ff ff ff` otherwise |
+| Offset | Size | Value                       | Comment                                                                       |
+| ---    | ---  | ---                         | ---                                                                           |
+| 0x0    | 0x3  | Controller firmware version | major.minor.micro                                                             |
+| 0x3    | 0x1  | Controller firmware type    | `00` = JoyCon (L), `01` = JoyCon (R), `02` = Pro Controller, `03` = Gamecube  |
+| 0x4    | 0x3  | Bluetooth patch version     | major.minor.micro                                                             |
+| 0x7    | 0x1  | Padding                     | -                                                                             |
+| 0x8    | 0x3  | DSP firmware version        | major.minor.micro. Only present on Pro Controller with updated firmware       |
+| 0x7    | 0x1  | Padding                     | -                                                                             |
 
 ---
 
