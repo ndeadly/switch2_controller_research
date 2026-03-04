@@ -35,22 +35,22 @@ Available on all controller types. Sent via GATT handle 0x000A (UUID=`ab7de9be-8
 
 | Offset | Size | Value                                   | Comment                                                                                             |
 | ---    | ---  | ---                                     | ---                                                                                                 |
-| 0x0    | 0x4  | Counter                                 | -                                                                                                   |
+| 0x0    | 0x4  | Counter                                 | 32-bit report counter. Increments by 1 each report                                                  |
 | 0x4    | 0x4  | [Buttons](#button-format)               | Bitfield                                                                                            |
 | 0x8    | 0x2  | Unknown                                 | -                                                                                                   |
-| 0xA    | 0x3  | Left Analog Stick                       | Packed 12-bit values (uncalibrated)                                                                 |
-| 0xD    | 0x3  | Right Analog Stick                      | Packed 12-bit values (uncalibrated)                                                                 |
+| 0xA    | 0x3  | Left Analog Stick                       | Uncalibrated. Packed 12-bit values                                                                  |
+| 0xD    | 0x3  | Right Analog Stick                      | Uncalibrated. Packed 12-bit values                                                                  |
 | 0x10   | 0x8  | [Mouse Data](#mouse-data-absolute)      | Activated via feature bit 4. Only present on Joycon controllers                                     |
 | 0x18   | 0x1  | Unknown                                 | Always 0                                                                                            |
 | 0x19   | 0x6  | [Magnetometer Data](#magnetometer-data) | Activated via feature bit 7                                                                         |
 | 0x1F   | 0x2  | Battery Voltage                         | Battery voltage in mV                                                                               |
 | 0x21   | 0x1  | Charging State/Rate                     | Changes when USB power source connected. Seems to rise and settle on 0x34. 0x20 when fully charged. |
 | 0x22   | 0x2  | Battery Current?                        | Activated via feature bit 5                                                                         |
-| 0x24   | 0x5  | Unknown                                 | Always 0                                                                                            |
+| 0x24   | 0x5  | Unknown                                 | Always 0x00                                                                                         |
 | 0x29   | 0x1  | Unknown                                 | Always 0x01                                                                                         |
 | 0x2A   | 0x12 | [Motion Data](#motion-data)             | Activated via feature bit 2                                                                         |
-| 0x3C   | 0x1  | Left Analog Trigger                     | Only present on Gamecube NSO controller (uncalibrated)                                              |
-| 0x3D   | 0x1  | Right Analog Trigger                    | Only present on Gamecube NSO controller (uncalibrated)                                              |
+| 0x3C   | 0x1  | Left Analog Trigger                     | Uncalibrated. Only present on Gamecube NSO controller                                               |
+| 0x3D   | 0x1  | Right Analog Trigger                    | Uncalibrated. Only present on Gamecube NSO controller                                               |
 | 0x3E   | 0x1  | Reserved                                | Unused                                                                                              |
 
 #### Button Format
@@ -100,14 +100,14 @@ Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID=`cc1bbbb5-7354
 
 | Offset | Size | Value                              | Comment                                                                               |
 | ---    | ---  | ---                                | ---                                                                                   |
-| 0x0    | 0x1  | Counter                            | -                                                                                     |
+| 0x0    | 0x1  | Counter                            | 8-bit report counter. Increments by 1 each report                                     |
 | 0x1    | 0x1  | Power Info                         | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved |
 | 0x2    | 0x2  | [Buttons](#button-format-1)        | Bitfield                                                                              |
 | 0x4    | 0x1  | Unknown                            | Always 0x07?                                                                          |
 | 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                                                   |
 | 0x8    | 0x1  | Unknown                            | -                                                                                     |
 | 0x9    | 0x5  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                                          |
-| 0xE    | 0x1  | Unknown                            | Always 0                                                                              |
+| 0xE    | 0x1  | NFC state                          | Always 0. Left JoyCon doesn't support NFC                                             |
 | 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40}                          |
 | 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format                                    |
 | 0x38   | 0x7  | Reserved                           | Unused                                                                                |
@@ -135,14 +135,14 @@ Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID=`d5a9e01e-2ffc
 
 | Offset | Size | Value                              | Comment                                                                               |
 | ---    | ---  | ---                                | ---                                                                                   |
-| 0x0    | 0x1  | Counter                            | -                                                                                     |
+| 0x0    | 0x1  | Counter                            | 8-bit report counter. Increments by 1 each report                                     |
 | 0x1    | 0x1  | Power Info                         | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved |
 | 0x2    | 0x2  | [Buttons](#button-format-2)        | Bitfield                                                                              |
 | 0x4    | 0x1  | Unknown                            | Always 0x07?                                                                          |
-| 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                                                   |
+| 0x5    | 0x3  | Analog Stick                       | Uncalibrated. Packed 12-bit values                                                    |
 | 0x8    | 0x1  | Unknown                            | -                                                                                     |
 | 0x9    | 0x5  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                                          |
-| 0xE    | 0x1  | Unknown                            | Always 0                                                                              |
+| 0xE    | 0x1  | NFC state                          | Indicates state of NFC processor. Values 0x00-0x07, 0x00=Idle                         |
 | 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40}                          |
 | 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format                                    |
 | 0x38   | 0x7  | Reserved                           | Unused                                                                                |
@@ -168,19 +168,19 @@ Only available on JoyCon 2 (R). Sent via GATT handle 0x000E (UUID=`d5a9e01e-2ffc
 
 Only available on Pro Controller 2. Sent via GATT handle 0x000E (UUID=`7492866c-ec3e-4619-8258-32755ffcc0f8`)
 
-| Offset | Size | Value                       | Comment                                                                               |
-| ---    | ---  | ---                         | ---                                                                                   |
-| 0x0    | 0x1  | Counter                     | -                                                                                     |
-| 0x1    | 0x1  | Power Info                  | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved |
-| 0x2    | 0x3  | [Buttons](#button-format-3) | Bitfield                                                                              |
-| 0x5    | 0x3  | Left Analog Stick           | Packed 12-bit values (uncalibrated)                                                   |
-| 0x8    | 0x3  | Right Analog Stick          | Packed 12-bit values (uncalibrated)                                                   |
-| 0xB    | 0x1  | Unknown                     | Always 0x38                                                                           |
-| 0xC    | 0x1  | Unknown                     | Unused?                                                                               |
-| 0xD    | 0x1  | Headset/Flags               | Only present on Pro Controller. 0x1 when headset inserted                             |
-| 0xE    | 0x1  | Motion Data Length          | Length of following motion data. Observed values {0, 30, 40}                          |
-| 0xF    | 0x28 | Motion Data                 | Activated via feature bit 2. Unknown packed format                                    |
-| 0x37   | 0x8  | Reserved                    | Unused                                                                                |
+| Offset | Size | Value                       | Comment                                                                                          |
+| ---    | ---  | ---                         | ---                                                                                              |
+| 0x0    | 0x1  | Counter                     | 8-bit report counter. Increments by 1 each report                                                |
+| 0x1    | 0x1  | Power Info                  | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved            |
+| 0x2    | 0x3  | [Buttons](#button-format-3) | Bitfield                                                                                         |
+| 0x5    | 0x3  | Left Analog Stick           | Uncalibrated. Packed 12-bit values                                                               |
+| 0x8    | 0x3  | Right Analog Stick          | Uncalibrated. Packed 12-bit values                                                               |
+| 0xB    | 0x1  | Unknown                     | 0x38 if feature bit 5 has been set, otherwise 0x30                                               |
+| 0xC    | 0x1  | NFC state                   | Indicates state of NFC processor. Values 0x00-0x07, 0x00=Idle                                    |
+| 0xD    | 0x1  | Headset Audio State         | Alternates between 0x07/0x0F with a headset connected, 0x05/0x0D with headphones, 0x00 otherwise |
+| 0xE    | 0x1  | Motion Data Length          | Length of following motion data. Observed values {0, 30, 40}                                     |
+| 0xF    | 0x28 | Motion Data                 | Activated via feature bit 2. Unknown packed format                                               |
+| 0x37   | 0x8  | Reserved                    | Unused                                                                                           |
 
 #### Button Format
 
@@ -198,12 +198,12 @@ Only available on NSO Gamecube controllers. Sent via GATT handle 0x000E (UUID=`8
 
 | Offset | Size | Value                       | Comment                                                                               |
 | ---    | ---  | ---                         | ---                                                                                   |
-| 0x0    | 0x1  | Counter                     | -                                                                                     |
+| 0x0    | 0x1  | Counter                     | 8-bit report counter. Increments by 1 each report                                     |
 | 0x1    | 0x1  | Power Info                  | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved |
 | 0x2    | 0x3  | [Buttons](#button-format-4) | Bitfield                                                                              |
-| 0x5    | 0x3  | Left Analog Stick           | Packed 12-bit values (uncalibrated)                                                   |
-| 0x8    | 0x3  | Right Analog Stick          | Packed 12-bit values (uncalibrated)                                                   |
-| 0xB    | 0x1  | Unknown                     | Always 0x38                                                                           |
+| 0x5    | 0x3  | Left Analog Stick           | Uncalibrated. Packed 12-bit values                                                    |
+| 0x8    | 0x3  | Right Analog Stick          | Uncalibrated. Packed 12-bit values                                                    |
+| 0xB    | 0x1  | Unknown                     | 0x38 if feature bit 5 has been set, otherwise 0x30                                    |
 | 0xC    | 0x1  | Left Analog Trigger         | Gamecube analog trigger (uncalibrated)                                                |
 | 0xD    | 0x1  | Right Analog Trigger        | Gamecube analog trigger (uncalibrated)                                                |
 | 0xE    | 0x1  | Motion Data Length          | Length of following motion data. Observed values {0, 30, 40}                          |
