@@ -105,7 +105,7 @@ print("B2: ", B2.hex())
 
 ## GATT Attributes
 
-Once a connection is established, all controller types expose the following GATT attributes. Attributes with handles `0x000e`, `0x0012`, `0x0016` and `0x001e` (marked `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`) appear to be non-static, and have a new UUID generated every time the controller is paired to a new host.
+Once a connection is established, controllers expose the following GATT attributes. Each controller type implements its own report format for attribute handles `0x000e`, `0x0012`, `0x0016` and `0x001e`, each with their own UUID. Pro controllers updated from factory firmware also expose additional attributes for headset audio.
 
 | UUID                                   | Type            | Handle(s)     | Properties      | Usage                                                 | Controller |
 | ---                                    | ---             | ---           | ---             | ---                                                   | ---        |
@@ -147,24 +147,263 @@ Once a connection is established, all controller types expose the following GATT
 | `b746df8c-f358-495b-9cd2-e3bbeda4f979` | Descriptor      | 0x0024        | -               | Unknown                                               | All        |
 | `ab7de9be-89fe-49ad-828f-118f09df7fde` | Characteristic  | 0x0026        | READ \| NOTIFY  | Input Report (Unknown)                                | All        |
 | `2902`                                 | Descriptor      | 0x0027        | -               | Client Characteristic Configuration                   | All        |
-| `679d5510-5a24-4dee-9557-95df80486ecb` | Descriptor      | 0x0028        | -               | Unknown                                               | All        |
+| `679d5510-5a24-4dee-9557-95df80486ecb` | Descriptor      | 0x0028        | -               | Set Report Rate?                                      | All        |
 | `ab7de9be-89fe-49ad-828f-118f09df7fdf` | Characteristic  | 0x002a        | WRITENORESPONSE | Output Report (Unknown)                               | All        |
 | `cc483f51-9258-427d-a939-630c31f72b06` | Characteristic  | 0x002c        | WRITENORESPONSE | Output Report (Headset Audio)                         | Pro        |
 | `7492866c-ec3e-4619-8258-32755ffcc0f9` | Characteristic  | 0x002e        | READ \| NOTIFY  | Input Report (Headset Audio)                          | Pro        |
 | `2902`                                 | Descriptor      | 0x002f        | -               | Client Characteristic Configuration                   | Pro        |
 | `679d5510-5a24-4dee-9557-95df80486ecb` | Descriptor      | 0x0030        | -               | Set Report Rate?                                      | Pro        |
-| `3dacbc7e-6955-40b5-8eaf-6f9809e8b380` | Characteristic  | 0x0032        | WRITENORESPONSE | Output Report (Unknown)                               | Pro        |
+| `3dacbc7e-6955-40b5-8eaf-6f9809e8b380` | Characteristic  | 0x0032        | WRITENORESPONSE | Output Report (Unknown + Command)                     | Pro        |
 
-#### Standard Attributes
 
 The controllers also expose the following standard attributes from the spec. Curiously, the Generic Attribute service has no attributes underneath it. Pro Controllers that have been updated from the original factory firmware to support headset audio have some additional attributes added, so the handle values below are offset by +8, starting from `0x0033`.
 
-| UUID                                   | Type            | Handle(s)     | Properties      | Usage                                                 | Controller |
-| ---                                    | ---             | ---           | ---             | ---                                                   | ---        |
-| `1800`                                 | Primary Service | 0x002b-0x002f | -               | Generic Access                                        | All        |
-| `2a00`                                 | Characteristic  | 0x002d        | READ            | Device Name                                           | All        |
-| `2a01`                                 | Characteristic  | 0x002f        | READ            | Appearance                                            | All        |
-| `1801`                                 | Primary Service | 0x0030-0x0030 | -               | Generic Attribute                                     | All        |
+| UUID   | Type            | Handle(s)     | Properties | Usage             | Controller |
+| ---    | ---             | ---           | ---        | ---               | ---        |
+| `1800` | Primary Service | 0x002b-0x002f | -          | Generic Access    | All        |
+| `2a00` | Characteristic  | 0x002d        | READ       | Device Name       | All        |
+| `2a01` | Characteristic  | 0x002f        | READ       | Appearance        | All        |
+| `1801` | Primary Service | 0x0030-0x0030 | -          | Generic Attribute | All        |
+
+<!-- #### `00c5af5d-1964-4e30-8f51-1956f96bd281` - Unknown
+#### `00c5af5d-1964-4e30-8f51-1956f96bd282` - Unknown
+#### `00c5af5d-1964-4e30-8f51-1956f96bd283` - Unknown -->
+
+### HID Reports
+
+The following attributes expose the HID reports found in the USB HID descriptors. They are identical to those sent over USB only the first byte containing the report ID is omitted.
+
+
+#### `0x000a` - `ab7de9be-89fe-49ad-828f-118f09df7fd2`
+
+Common HID input report notification. See [Input Report 0x05](hid_reports.md#input-report-0x05)
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x000b`
+
+
+#### `0x000e` - `cc1bbbb5-7354-4d32-a716-a81cb241a32a`
+
+JoyCon 2 (L) HID input report notification. See [Input Report 0x07](hid_reports.md#input-report-0x07)
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x000f`
+
+
+#### `0x000e` - `d5a9e01e-2ffc-4cca-b20c-8b67142bf442`
+
+JoyCon 2 (R) HID input report notification. See [Input Report 0x08](hid_reports.md#input-report-0x08)
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x000f`
+
+
+#### `0x000e` - `7492866c-ec3e-4619-8258-32755ffcc0f8`
+
+Pro Controller 2 HID input report notification. See [Input Report 0x09](hid_reports.md#input-report-0x09)
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x000f`
+
+
+#### `0x000e` - `8261cba1-9435-420c-84d6-f0c75a2c8e4d`
+
+NSO Gamecube Controller HID input report notification. See [Input Report 0x0A](hid_reports.md#input-report-0x0A)
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x000f`
+
+
+#### `0x0012` - `289326cb-a471-485d-a8f4-240c14f18241`
+
+JoyCon 2 (L) HID output report. See [Output Report 0x01](hid_reports.md#output-report-0x01)
+
+
+#### `0x0012` - `fa19b0fb-cd1f-46a7-84a1-bbb09e00c149`
+
+JoyCon 2 (R) HID output report. See [Output Report 0x01](hid_reports.md#output-report-0x01)
+
+
+#### `0x0012` - `cc483f51-9258-427d-a939-630c31f72b05`
+
+Pro Controller 2 HID output report. See [Output Report 0x02](hid_reports.md#output-report-0x02)
+
+
+#### `0x0012` - `3f8fb670-ab25-45bf-b540-38c72834d064`
+
+NSO Gamecube Controller HID output report. See [Output Report 0x03](hid_reports.md#output-report-0x03)
+
+
+### Additional Bluetooth Reports
+
+The following attributes expose Bluetooth-specific reports. They exist to provide similar functionality to the additional interfaces exposed over USB
+
+
+#### `0x0014` - `649d4ac9-8eb7-4e6c-af44-1ea54fe5f005`
+
+Basic command report. Available on all controllers.
+
+| Offset | Size     | Value          | Comment                |
+| ---    | ---      | ---            | ---                    |
+| 0x0    | 0x8      | Command Header | Command request header |
+| 0x8    | Variable | Command Data   | Command request data   |
+
+
+#### `0x0016` - `ce49a830-dced-48ae-931e-c8cf88aadbea`
+
+HD rumble + command report. JoyCon 2 (L) only.
+
+| Offset | Size     | Value          | Comment                               |
+| ---    | ---      | ---            | ---                                   |
+| 0x0    | 0x1      | Report ID      | Always `00` for Bluetooth connections |
+| 0x1    | 0x10     | HD Rumble Data | Packed rumble data for LRA            |
+| 0x11   | 0x8      | Command Header | Command request header                |
+| 0x19   | Variable | Command Data   | Command request data                  |
+
+
+#### `0x0016` - `65a724b3-f1e7-4a61-8078-a342376b27ff`
+
+HD rumble + command report. JoyCon 2 (R) only.
+
+| Offset | Size     | Value          | Comment                               |
+| ---    | ---      | ---            | ---                                   |
+| 0x0    | 0x1      | Report ID      | Always `00` for Bluetooth connections |
+| 0x1    | 0x10     | HD Rumble Data | Packed rumble data for LRA            |
+| 0x11   | 0x8      | Command Header | Command request header                |
+| 0x19   | Variable | Command Data   | Command request data                  |
+
+
+#### `0x0016` - `3dacbc7e-6955-40b5-8eaf-6f9809e8b379`
+
+HD rumble + command report. Pro Controller 2 only.
+
+| Offset | Size     | Value                | Comment                               |
+| ---    | ---      | ---                  | ---                                   |
+| 0x0    | 0x1      | Report ID            | Always `00` for Bluetooth connections |
+| 0x1    | 0x10     | HD Rumble Data Left  | Packed rumble data for left LRA       |
+| 0x11   | 0x10     | HD Rumble Data Right | Packed rumble data for right LRA      |
+| 0x21   | 0x8      | Command Header       | Command request header                |
+| 0x29   | Variable | Command Data         | Command request data                  |
+
+
+#### `0x0016` - `af95885e-44b3-4a24-9cf0-483cc129469a`
+
+HD rumble + command report. Gamecube NSO Controller only.
+
+| Offset | Size     | Value                | Comment                               |
+| ---    | ---      | ---                  | ---                                   |
+| 0x0    | 0x1      | Report ID            | Always `00` for Bluetooth connections |
+| 0x1    | 0x4      | Gamecube Rumble Data | Packed rumble data for Gamecube motor |
+| 0x5    | 0x8      | Command Header       | Command request header                |
+| 0xD    | Variable | Command Data         | Command request data                  |
+
+
+#### `0x0018` - `4147423d-fdae-4df7-a4f7-d23e5df59f8d`
+
+Large command report. Available on all controllers.
+
+Allows large commands to be split across multiple reports. Used by the console during firmware updates with [0x0D commands](commands.md#command-0x0d---firmware-update), but may be possible to use with arbitrary commands.
+
+| Offset | Size     | Value        | Comment                                                                                                                              |
+| ---    | ---      | ---          | ---                                                                                                                                  |
+| 0x0    | 0x1      | Chunk Type   | Indicates whether a chunk being transferred is the beginning or continuation of a command. 0x01=begin command, 0x02=continue command |
+| 0x1    | 0x1      | Chunk Number | Number of the data chunk within the block being transferred                                                                          |
+| 0x2    | 0x1      | Chunk Size   | Size of the chunk being transferred                                                                                                  |
+| 0x3    | 0x1      | Unused       | Always `00`                                                                                                                          |
+| 0x4    | 0x1-0x64 | Chunk Data   | Chunk of command       
+
+
+#### `0x001a` - `c765a961-d9d8-4d36-a20a-5315b111836a`
+
+Basic command response notification. Available on all controllers.
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x001b`
+
+| Offset | Size     | Value          | Comment                 |
+| ---    | ---      | ---            | ---                     |
+| 0x0    | 0x8      | Command Header | Command response header |
+| 0x8    | Variable | Command Data   | Command response data   |
+
+
+#### `0x001e` - `63a3810f-aec7-474b-9010-3d52403cb996`
+
+Extended command response notification. JoyCon 2 (L) only.
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x001f`
+
+| Offset | Size     | Value          | Comment                 |
+| ---    | ---      | ---            | ---                     |
+| 0x0    | 0xE      | Unknown        | All `00`                |
+| 0xF    | 0x8      | Command Header | Command response header |
+| 0x17   | Variable | Command Data   | Command response data   |
+
+
+#### `0x001e` - `640ca58e-0e88-410c-a7f3-426faf2b690b`
+
+Extended command response notification. JoyCon 2 (R) only.
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x001f`
+
+| Offset | Size     | Value          | Comment                 |
+| ---    | ---      | ---            | ---                     |
+| 0x0    | 0xE      | Unknown        | All `00`                |
+| 0xF    | 0x8      | Command Header | Command response header |
+| 0x17   | Variable | Command Data   | Command response data   |
+
+
+#### `0x001e` - `506d9f7d-4278-4e95-a549-326ba77657e0`
+
+Extended command response notification. Pro Controller 2 only.
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x001f`
+
+| Offset | Size     | Value          | Comment                 |
+| ---    | ---      | ---            | ---                     |
+| 0x0    | 0xE      | Unknown        | All `00`                |
+| 0xF    | 0x8      | Command Header | Command response header |
+| 0x17   | Variable | Command Data   | Command response data   |
+
+
+#### `0x001e` - `46f6ad29-cdaf-4569-a2fe-339020b94604`
+
+Extended command response notification. Gamecube NSO Controller only.
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x001f`
+
+| Offset | Size     | Value          | Comment                 |
+| ---    | ---      | ---            | ---                     |
+| 0x0    | 0xE      | Unknown        | All `00`                |
+| 0xF    | 0x8      | Command Header | Command response header |
+| 0x17   | Variable | Command Data   | Command response data   |
+
+
+<!-- #### `0x0022` - `d3bd69d2-841c-4241-ab15-f86f406d2a80`
+#### `0x0026` - `ab7de9be-89fe-49ad-828f-118f09df7fde`
+#### `0x002a` - `ab7de9be-89fe-49ad-828f-118f09df7fdf`
+#### `0x002c` - `cc483f51-9258-427d-a939-630c31f72b06` -->
+
+#### `0x002e` - `7492866c-ec3e-4619-8258-32755ffcc0f9`
+
+Headset audio + HID input notification. Pro Controller only. Only available from controller firmware 2.0.0+.
+
+Similar to input report 0x09, but with 0x34 bytes of headset audio data inserted at offset 0xD
+
+Activated by writing `0x0001` to the CCC Descriptor (UUID=`0x2902`) on handle `0x002f`
+
+| Offset | Size | Value                       | Comment                                                                                          |
+| ---    | ---  | ---                         | ---                                                                                              |
+| 0x0    | 0x1  | Counter                     | 8-bit report counter. Increments by 1 each report                                                |
+| 0x1    | 0x1  | Power Info                  | Bitfield. [0]=external power, [1]=charging, [2:5]=battery level (0-9), [6:7]=reserved            |
+| 0x2    | 0x3  | [Buttons](#button-format-3) | Bitfield                                                                                         |
+| 0x5    | 0x3  | Left Analog Stick           | Uncalibrated. Packed 12-bit values                                                               |
+| 0x8    | 0x3  | Right Analog Stick          | Uncalibrated. Packed 12-bit values                                                               |
+| 0xB    | 0x1  | Unknown                     | 0x38 if feature bit 5 has been set, otherwise 0x30                                               |
+| 0xC    | 0x1  | NFC State                   | Indicates state of NFC processor. Values 0x00-0x07, 0x00=Idle                                    |
+| 0xD    | 0x1  | Headset Audio State         | Alternates between 0x07/0x0F with a headset connected, 0x05/0x0D with headphones, 0x00 otherwise |
+| 0xE    | 0x1  | Headset Audio Data Length   | Length of following audio data. Always 0x32                                                      |
+| 0xF    | 0x32 | Headset Audio Data          | Unknown format                                                                                   |
+| 0x41   | 0x1  | Motion Data Length          | Length of following motion data. Observed values {0, 30, 40}                                     |
+| 0x42   | 0x28 | Motion Data                 | Activated via feature bit 2. Unknown packed format                                               |
+| 0x6A   | 0x6  | Reserved                    | Unused                                                                                           |
+
+
+<!-- ### `0x0032` - `3dacbc7e-6955-40b5-8eaf-6f9809e8b380` -->
+
 
 ---
 
