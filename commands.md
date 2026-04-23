@@ -222,26 +222,28 @@ Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write 
 
 ## Command 0x03 - Initialisation
 
+These commands appear to be intended for use over USB/rail connections.
+
 | Command | Subcommand                                       | Usage               | Example Request                                                                               | Example Response                        |
 | ---     | ---                                              | ---                 | ---                                                                                           | ---                                     |
-| `0x03`  | `0x01`                                           | Unknown             | `03 91 00 01 00 04 00 00 01 00 00 00`                                                         | `03 01 00 01 00 f8 00 00`               |
-| `0x03`  | `0x02`                                           | Unknown             | `03 91 00 02 00 00 00 00`                                                                     | `03 01 00 02 00 f8 00 00`               |
+| `0x03`  | [`0x01`](#subcommand-0x01---bluetooth-wake)      | Bluetooth wake      | `03 91 00 01 00 04 00 00 01 00 00 00`                                                         | `03 01 00 01 00 f8 00 00`               |
+| `0x03`  | [`0x02`](#subcommand-0x02---bluetooth-cancel)    | Bluetooth cancel    | `03 91 00 02 00 00 00 00`                                                                     | `03 01 00 02 00 f8 00 00`               |
 | `0x03`  | `0x03`                                           | Unknown             | ``                                                                                            | ``                                      |
 | `0x03`  | `0x04`                                           | Unknown             | ``                                                                                            | ``                                      |
 | `0x03`  | `0x05`                                           | Unknown             | ``                                                                                            | ``                                      |
 | `0x03`  | `0x06`                                           | Unknown             | ``                                                                                            | ``                                      |
 | `0x03`  | [`0x07`](#subcommand-0x07---store-pairing-info)  | Store pairing info  | `03 91 01 07 00 16 00 00` `5e 11 85 eb f1 48 c1 27 80 67 1a fd 29 b8 00 e1 dd c5 19 b4 f0 54` | `03 01 01 07 10 78 00 00`               |
-| `0x03`  | `0x08`                                           | Unknown             | `03 91 00 08 00 00 00 00`                                                                     | `03 01 00 08 00 f8 00 00`               |
+| `0x03`  | [`0x08`](#subcommand-0x08---clear-pairing-info)  | Clear pairing info  | `03 91 00 08 00 00 00 00`                                                                     | `03 01 00 08 00 f8 00 00`               |
 | `0x03`  | `0x09`                                           | Unknown             | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
 | `0x03`  | [`0x0A`](#subcommand-0x0a---select-input-report) | Select input report | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
 | `0x03`  | `0x0C`                                           | Unknown             | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
-| `0x03`  | `0x0D`                                           | Initialise USB      | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
+| `0x03`  | [`0x0D`](#subcommand-0x0d---initialise-usb)      | Initialise USB      | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
 | `0x03`  | `0x0F`                                           | Unknown             | `03 91 00 0f 00 00 00 00`                                                                     | `03 01 00 0f 00 f8 00 00` `05 00 00 00` |
 
 
-### Subcommand 0x01 - Unknown
+### Subcommand 0x01 - Bluetooth Wake
 
-Unknown. Wakes the console via Bluetooth when argument is nonzero.
+Starts broadcasting [Bluetooth LE advertisements](bluetooth_interface.md#bluetooth-le-advertisements) to wake the console when argument is nonzero.
 
 **Request data:**
 
@@ -254,9 +256,9 @@ Unknown. Wakes the console via Bluetooth when argument is nonzero.
 *None*
 
 
-### Subcommand 0x02 - Unknown
+### Subcommand 0x02 - Bluetooth Cancel
 
-Unknown.
+Cancels any active Bluetooth LE advertising (though player leds continue to cycle indefinitely, maybe a firmware bug?).
 
 **Request data:**
 
@@ -277,6 +279,19 @@ Seems to allow for bypassing the [0x15 commands](#command-0x15---bluetooth-pairi
 | ---    | ---  | ---          | ---                                           |
 | 0x0    | 0x6  | Host address | Bluetooth address of the host (byte-reversed) |
 | 0x6    | 0x10 | LTK          | Bluetooth LTK                 (byte-reversed) |
+
+**Response data:** 
+
+*None*
+
+
+### Subcommand 0x08 - Clear Pairing Info
+
+Invalidates the pairing info stored at 0x1FA000 by setting the entry count to zero and writing junk? data.
+
+**Request data:**
+
+*None*
 
 **Response data:** 
 
