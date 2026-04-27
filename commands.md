@@ -224,21 +224,21 @@ Write to internal flash [memory](memory_layout.md#memory-layout). Maximum write 
 
 These commands appear to be intended for use over USB/rail connections.
 
-| Command | Subcommand                                       | Usage               | Example Request                                                                               | Example Response                        |
-| ---     | ---                                              | ---                 | ---                                                                                           | ---                                     |
-| `0x03`  | [`0x01`](#subcommand-0x01---bluetooth-wake)      | Bluetooth wake      | `03 91 00 01 00 04 00 00 01 00 00 00`                                                         | `03 01 00 01 00 f8 00 00`               |
-| `0x03`  | [`0x02`](#subcommand-0x02---bluetooth-cancel)    | Bluetooth cancel    | `03 91 00 02 00 00 00 00`                                                                     | `03 01 00 02 00 f8 00 00`               |
-| `0x03`  | `0x03`                                           | Unknown             | ``                                                                                            | ``                                      |
-| `0x03`  | `0x04`                                           | Unknown             | ``                                                                                            | ``                                      |
-| `0x03`  | `0x05`                                           | Unknown             | ``                                                                                            | ``                                      |
-| `0x03`  | `0x06`                                           | Unknown             | ``                                                                                            | ``                                      |
-| `0x03`  | [`0x07`](#subcommand-0x07---store-pairing-info)  | Store pairing info  | `03 91 01 07 00 16 00 00` `5e 11 85 eb f1 48 c1 27 80 67 1a fd 29 b8 00 e1 dd c5 19 b4 f0 54` | `03 01 01 07 10 78 00 00`               |
-| `0x03`  | [`0x08`](#subcommand-0x08---clear-pairing-info)  | Clear pairing info  | `03 91 00 08 00 00 00 00`                                                                     | `03 01 00 08 00 f8 00 00`               |
-| `0x03`  | `0x09`                                           | Unknown             | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
-| `0x03`  | [`0x0A`](#subcommand-0x0a---select-input-report) | Select input report | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
-| `0x03`  | `0x0C`                                           | Unknown             | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
-| `0x03`  | [`0x0D`](#subcommand-0x0d---initialise-usb)      | Initialise USB      | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
-| `0x03`  | `0x0F`                                           | Unknown             | `03 91 00 0f 00 00 00 00`                                                                     | `03 01 00 0f 00 f8 00 00` `05 00 00 00` |
+| Command | Subcommand                                          | Usage                  | Example Request                                                                               | Example Response                        |
+| ---     | ---                                                 | ---                    | ---                                                                                           | ---                                     |
+| `0x03`  | [`0x01`](#subcommand-0x01---bluetooth-wake)         | Bluetooth wake         | `03 91 00 01 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 01 00 f8 00 00`               |
+| `0x03`  | [`0x02`](#subcommand-0x02---bluetooth-cancel)       | Bluetooth cancel       | `03 91 00 02 00 00 00 00`                                                                     | `03 01 00 02 00 f8 00 00`               |
+| `0x03`  | [`0x03`](#subcommand-0x03---enable-usb-hid-reports) | Enable USB HID reports | `03 91 00 03 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 03 00 F8 00 00` `01 00 00 00` |
+| `0x03`  | `0x04`                                              | Unknown                | ``                                                                                            | ``                                      |
+| `0x03`  | `0x05`                                              | Unknown                | ``                                                                                            | ``                                      |
+| `0x03`  | `0x06`                                              | Unknown                | ``                                                                                            | ``                                      |
+| `0x03`  | [`0x07`](#subcommand-0x07---send-pairing-info)      | Send pairing info      | `03 91 01 07 00 16 00 00` `5e 11 85 eb f1 48 c1 27 80 67 1a fd 29 b8 00 e1 dd c5 19 b4 f0 54` | `03 01 01 07 10 78 00 00`               |
+| `0x03`  | [`0x08`](#subcommand-0x08---clear-pairing-info)     | Clear pairing info     | `03 91 00 08 00 00 00 00`                                                                     | `03 01 00 08 00 f8 00 00`               |
+| `0x03`  | [`0x09`](#subcommand-0x09---store-pairing-info)     | Store pairing info     | `03 91 01 09 00 00 00 00`                                                                     | `03 01 01 09 10 78 00 00`               |
+| `0x03`  | [`0x0A`](#subcommand-0x0a---select-input-report)    | Select input report    | `03 91 00 0a 00 04 00 00` `09 00 00 00`                                                       | `03 01 00 0a 00 f8 00 00`               |
+| `0x03`  | `0x0C`                                              | Unknown                | `03 91 00 0c 00 04 00 00` `01 00 00 00`                                                       | `03 01 00 0c 00 f8 00 00`               |
+| `0x03`  | [`0x0D`](#subcommand-0x0d---initialise-usb)         | Initialise USB         | `03 91 00 0d 00 08 00 00` `01 00 31 7e c6 eb f1 48`                                           | `03 01 00 0d 00 f8 00 00` `01 00 00 00` |
+| `0x03`  | `0x0F`                                              | Unknown                | `03 91 00 0f 00 00 00 00`                                                                     | `03 01 00 0f 00 f8 00 00` `05 00 00 00` |
 
 
 ### Subcommand 0x01 - Bluetooth Wake
@@ -269,9 +269,27 @@ Cancels any active Bluetooth LE advertising (though player leds continue to cycl
 *None*
 
 
-### Subcommand 0x07 - Store Pairing Info
+### Subcommand 0x03 - Enable USB HID Reports
 
-Seems to allow for bypassing the [0x15 commands](#command-0x15---bluetooth-pairing) and writes a Bluetooth host address and Long-Term-Key (LTK) to the controller directly.
+Activates HID input reports over USB.
+
+**Request data:**
+
+| Offset | Size | Value    | Comment |
+| ---    | ---  | ---      | ---     |
+| 0x0    | 0x1  | Enable   |         |
+| 0x0    | 0x3  | Reserved |         |
+
+**Response data:** 
+
+| Offset | Size | Value   | Comment |
+| ---    | ---  | ---     | ---     |
+| 0x0    | 0x4  | Unknown |         |
+
+
+### Subcommand 0x07 - Send Pairing Info
+
+Allows for bypassing the [0x15 commands](#command-0x15---bluetooth-pairing) and sends a Bluetooth host address and Long-Term-Key (LTK) to the controller directly. Must be followed by a call to [subcommand 0x09](#subcommand-0x09---store-pairing-info) to finalise the pairing data and store it to controller.
 
 **Request data:**
 
@@ -298,9 +316,11 @@ Invalidates the pairing info stored at 0x1FA000 by setting the entry count to ze
 *None*
 
 
-### Subcommand 0x09 - Unknown
+### Subcommand 0x09 - Store Pairing Info
 
-Unknown.
+Stores up to 2 address/LTK pairs sent to the controller via [subcommand 0x07](#subcommand-0x07---send-pairing-info).
+
+New entries are appended to the pairing list if there are < 2 existing entries. If an entry for the host address is already present, it will be overwritten.
 
 **Request data:**
 
@@ -1128,7 +1148,7 @@ These commands are used for pairing the controller to the host instead of the st
 
 ### Subcommand 0x01 - Exchange Addresses
 
-Exchange Bluetooth adapter addresses between host and controller to be stored alongside the Bluetooth `LTK` for the connection.
+Exchange Bluetooth adapter addresses between host and controller to be stored alongside the Bluetooth `LTK` for the connection. Can be called without any request data to simply retrieve the controller address.
 
 **Request data:**
 
