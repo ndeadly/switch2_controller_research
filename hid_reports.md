@@ -73,24 +73,24 @@ Available on all controller types. Sent via GATT handle 0x000A (UUID=`ab7de9be-8
 
 #### Magnetometer Data
 
-| Offset | Size | Value | Comment |
-| ---    | ---  | ---   | ---     |
-| 0x0    | 0x2  | X     | -       |
-| 0x2    | 0x2  | Y     | -       |
-| 0x4    | 0x2  | Z     | -       |
+| Offset | Size | Value | Comment                                     |
+| ---    | ---  | ---   | ---                                         |
+| 0x0    | 0x2  | X     | Signed 16-bit LE. Sensitivity = 0.15 μT/LSB |
+| 0x2    | 0x2  | Y     | Signed 16-bit LE. Sensitivity = 0.15 μT/LSB |
+| 0x4    | 0x2  | Z     | Signed 16-bit LE. Sensitivity = 0.15 μT/LSB |
 
 #### Motion Data
 
-| Offset | Size | Value       | Comment |
-| ---    | ---  | ---         | ---     |
-| 0x0    | 0x4  | Timestamp   | -       |
-| 0x4    | 0x2  | Temperature | -       |
-| 0x6    | 0x2  | Accel X     | -       |
-| 0x8    | 0x2  | Accel Y     | -       |
-| 0xA    | 0x2  | Accel Z     | -       |
-| 0xC    | 0x2  | Gyro X      | -       |
-| 0xE    | 0x2  | Gyro Y      | -       |
-| 0x10   | 0x2  | Gyro Z      | -       |
+| Offset | Size | Value       | Comment                                                                           |
+| ---    | ---  | ---         | ---                                                                               |
+| 0x0    | 0x4  | Timestamp   | Timestamp in microseconds. Some controllers don't seem to report this correctly   |
+| 0x4    | 0x2  | Temperature | Signed 16-bit LE. Temperature deviation from 25°C (Sensitivity = 1/126.9 °C/LSB)  |
+| 0x6    | 0x2  | Accel X     | Signed 16-bit LE. Default FSR = ±8G (Sensitivity = 8.0/32767 G/LSB)               |
+| 0x8    | 0x2  | Accel Y     | Signed 16-bit LE. Default FSR = ±8G (Sensitivity = 8.0/32767 G/LSB)               |
+| 0xA    | 0x2  | Accel Z     | Signed 16-bit LE. Default FSR = ±8G (Sensitivity = 8.0/32767 G/LSB)               |
+| 0xC    | 0x2  | Gyro X      | Signed 16-bit LE. Default FSR = ±2000dps (Sensitivity = 2000.0/32767 dps/LSB)     |
+| 0xE    | 0x2  | Gyro Y      | Signed 16-bit LE. Default FSR = ±2000dps (Sensitivity = 2000.0/32767 dps/LSB)     |
+| 0x10   | 0x2  | Gyro Z      | Signed 16-bit LE. Default FSR = ±2000dps (Sensitivity = 2000.0/32767 dps/LSB)     |
 
 ---
 
