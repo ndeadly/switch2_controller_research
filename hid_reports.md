@@ -107,10 +107,9 @@ Only available on JoyCon 2 (L). Sent via GATT handle 0x000E (UUID=`cc1bbbb5-7354
 | 0x5    | 0x3  | Analog Stick                       | Packed 12-bit values (uncalibrated)                                                   |
 | 0x8    | 0x1  | Unknown                            | -                                                                                     |
 | 0x9    | 0x5  | [Mouse Data](#mouse-data-relative) | Activated via feature bit 4.                                                          |
-| 0xE    | 0x1  | NFC state                          | Always 0. Left JoyCon doesn't support NFC                                             |
-| 0xF    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40}                          |
-| 0x10   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format                                    |
-| 0x38   | 0x7  | Reserved                           | Unused                                                                                |
+| 0xE    | 0x1  | Motion Data Length                 | Length of following motion data. Observed values {0, 30, 40}                          |
+| 0x0F   | 0x28 | Motion Data                        | Activated via feature bit 2. Unknown packed format                                    |
+| 0x37   | 0x8  | Reserved                           | Unused                                                                                |
 
 #### Button Format
 
